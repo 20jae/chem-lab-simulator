@@ -1,0 +1,23 @@
+@import 'tailwindcss';
+@import 'tw-animate-css';
+@import 'shadcn/tailwind.css';
+@custom-variant dark (&:is(.dark *));
+@theme inline {
+  --color-background: var(--background); --color-foreground: var(--foreground); --font-sans: var(--font-sans); --font-heading: var(--font-sans);
+  --color-card: var(--card); --color-card-foreground: var(--card-foreground); --color-primary: var(--primary); --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary); --color-secondary-foreground: var(--secondary-foreground); --color-muted: var(--muted); --color-muted-foreground: var(--muted-foreground);
+  --color-border: var(--border); --color-input: var(--input); --color-ring: var(--ring); --color-destructive: var(--destructive);
+  --radius-sm: calc(var(--radius) * .65); --radius-md: calc(var(--radius) * .85); --radius-lg: var(--radius); --radius-xl: calc(var(--radius) * 1.35); --radius-2xl: calc(var(--radius) * 1.75);
+}
+:root {
+  --font-sans: 'Pretendard', 'Noto Sans KR', 'Apple SD Gothic Neo', Arial, sans-serif;
+  --background: oklch(.975 .009 175); --foreground: oklch(.25 .035 180); --card: oklch(1 0 0); --card-foreground: oklch(.25 .035 180);
+  --primary: oklch(.66 .12 178); --primary-foreground: oklch(.99 .01 175); --secondary: oklch(.94 .035 174); --secondary-foreground: oklch(.36 .07 176);
+  --muted: oklch(.955 .012 175); --muted-foreground: oklch(.54 .035 180); --border: oklch(.90 .025 176); --input: oklch(.90 .025 176);
+  --ring: oklch(.66 .12 178); --destructive: oklch(.58 .22 27); --radius: .8rem;
+}
+* { border-color: var(--border); }
+html { font-family: var(--font-sans); }
+body { margin: 0; background: radial-gradient(circle at 8% 20%, rgba(45,212,191,.09), transparent 24rem), radial-gradient(circle at 92% 80%, rgba(56,189,248,.07), transparent 28rem), var(--background); }
+button { cursor: pointer; }
+@media (max-width: 1023px) { .lab-grid > :nth-child(2) { order: -1; } }
