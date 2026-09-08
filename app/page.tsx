@@ -1,6 +1,7 @@
 import { ArrowRight, BookOpen, ChevronDown, FlaskConical, Gauge, Plus, Search, Sparkles, Thermometer, Timer } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { MaterialDialog } from '@/components/material-dialog';
 
 const substances = [
   { name: '염화 나트륨', formula: 'NaCl', color: 'bg-cyan-400' },
@@ -37,7 +38,7 @@ export default function Home() {
               <div className="flex items-center justify-between"><div><p className="text-xs font-semibold text-primary">STEP 1</p><CardTitle className="mt-1 text-lg font-bold">물질 넣기</CardTitle></div><span className="rounded-full bg-secondary px-3 py-1 text-xs font-semibold text-secondary-foreground">3개 선택</span></div>
             </CardHeader>
             <CardContent className="space-y-4 px-5 py-5">
-              <button className="flex h-11 w-full items-center gap-3 rounded-xl border bg-background px-3 text-left text-sm text-muted-foreground transition-colors hover:border-primary/40" type="button"><Search className="size-4" /> 물질명 또는 화학식 검색</button>
+              <MaterialDialog compact />
               <div className="space-y-2">
                 {substances.map((item) => (
                   <button key={item.formula} className="group flex w-full items-center gap-3 rounded-xl border border-transparent bg-muted/55 p-3 text-left transition-all hover:border-primary/25 hover:bg-primary/5" type="button">
@@ -47,7 +48,7 @@ export default function Home() {
                   </button>
                 ))}
               </div>
-              <Button variant="outline" className="h-11 w-full rounded-xl border-dashed text-primary"><Plus data-icon="inline-start" /> 물질 추가</Button>
+              <MaterialDialog />
             </CardContent>
           </Card>
 
