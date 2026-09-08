@@ -1,6 +1,6 @@
 'use client';
 
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { Beaker, Check, Plus, Search, Trash2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -28,6 +28,12 @@ export function MaterialDialog({ compact = false }: { compact?: boolean }) {
     { ...substances[0], amount: '5', unit: 'g', rowId: 2 },
   ]);
   const selected = substances.find((item) => item.id === selectedId) ?? substances[0];
+  const allowedUnits = selected.state === '고체' ? ['g', 'mg', 'mol'] : ['g', 'mg', 'mL', 'mol'];
+
+  useEffect(() => {
+    if (!allowedUnits.includes(unit)) setUnit(allowedUnits[0]);
+  }, [allowedUnits, unit]);
+
   const filtered = useMemo(() => {
     const term = query.trim().toLowerCase();
     return term ? substances.filter((item) => `${item.name} ${item.formula}`.toLowerCase().includes(term)) : substances;
@@ -77,7 +83,7 @@ export function MaterialDialog({ compact = false }: { compact?: boolean }) {
                 <p className="mt-3 text-sm leading-6 text-muted-foreground">{selected.description}</p>
               </div>
               <label htmlFor={`amount-${compact}`} className="mt-5 block text-sm font-semibold">투입량과 단위</label>
-              <div className="mt-2 grid grid-cols-[1fr_110px] gap-2"><Input id={`amount-${compact}`} type="number" min="0" step="any" value={amount} onChange={(event) => setAmount(event.target.value)} className="h-12 rounded-xl bg-white px-4 text-base font-semibold" /><Select value={unit} onValueChange={(value) => value && setUnit(value)}><SelectTrigger className="h-12 w-full rounded-xl bg-white px-4 text-base"><SelectValue /></SelectTrigger><SelectContent><SelectItem value="g">g</SelectItem><SelectItem value="mg">mg</SelectItem><SelectItem value="mL">mL</SelectItem><SelectItem value="mol">mol</SelectItem></SelectContent></Select></div>
+              <div className="mt-2 grid grid-cols-[1fr_110px] gap-2"><Input id={`amount-${compact}`} type="number" min="0" step="any" value={amount} onChange={(event) => setAmount(event.target.value)} className="h-12 rounded-xl bg-white px-4 text-base font-semibold" /><Select value={unit} onValueChange={(value) => value && setUnit(value)}><SelectTrigger className="h-12 w-full rounded-xl bg-white px-4 text-base"><SelectValue /></SelectTrigger><SelectContent>{allowedUnits.map((availableUnit) => <SelectItem key={availableUnit} value={availableUnit}>{availableUnit}</SelectItem>)}</SelectContent></Select></div>
               <Button onClick={addSubstance} disabled={!amount || Number(amount) <= 0} className="mt-4 h-12 w-full rounded-xl text-base font-bold"><Plus data-icon="inline-start" /> 현재 실험에 넣기</Button>
             </section>
           </div>
