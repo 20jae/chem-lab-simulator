@@ -87,14 +87,23 @@ export function ReactionDialog({ materials, conditions, onConditionsChange, trig
       )}
 
       <DialogContent className="flex max-h-[92vh] w-[min(980px,calc(100%-24px))] max-w-none flex-col gap-0 overflow-hidden rounded-2xl bg-background p-0 sm:max-w-none">
-        <DialogHeader className="border-b bg-white px-6 py-5 pr-14"><DialogTitle className="text-2xl font-bold">실험 조건 및 반응 판정</DialogTitle><DialogDescription className="text-base">실험 환경을 설정하고 현재 투입 물질의 기본 반응을 확인하세요.</DialogDescription></DialogHeader>
+        <DialogHeader className="border-b bg-white px-6 py-5 pr-14"><DialogTitle className="text-2xl font-bold">{trigger === 'start' ? '반응 판정 및 계산' : '실험 조건 설정'}</DialogTitle><DialogDescription className="text-base">{trigger === 'start' ? '설정한 조건과 현재 투입 물질을 바탕으로 기본 반응을 확인하세요.' : '반응을 시작하기 전에 실험 환경을 설정하세요.'}</DialogDescription></DialogHeader>
         <div className="overflow-y-auto p-4 sm:p-6">
-          <section className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
-            <ConditionInput icon={<Thermometer />} label="온도" unit="°C" value={conditions.temperature} min={-273.15} onChange={(value) => update('temperature', value)} />
-            <ConditionInput icon={<Gauge />} label="압력" unit="atm" value={conditions.pressure} min={0.01} step={0.1} onChange={(value) => update('pressure', value)} />
-            <ConditionInput icon={<TestTube2 />} label="pH" unit="pH" value={conditions.ph} min={0} max={14} step={0.1} onChange={(value) => update('ph', value)} />
-            <ConditionInput icon={<Timer />} label="반응 시간" unit="min" value={conditions.time} min={0} onChange={(value) => update('time', value)} />
-          </section>
+          {trigger === 'start' ? (
+            <section className="grid grid-cols-2 gap-3 sm:grid-cols-4">
+              <ConditionSummary icon={<Thermometer />} label="온도" value={`${conditions.temperature} °C`} />
+              <ConditionSummary icon={<Gauge />} label="압력" value={`${conditions.pressure} atm`} />
+              <ConditionSummary icon={<TestTube2 />} label="pH" value={`${conditions.ph}`} />
+              <ConditionSummary icon={<Timer />} label="시간" value={`${conditions.time} min`} />
+            </section>
+          ) : (
+            <section className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
+              <ConditionInput icon={<Thermometer />} label="온도" unit="°C" value={conditions.temperature} min={-273.15} onChange={(value) => update('temperature', value)} />
+              <ConditionInput icon={<Gauge />} label="압력" unit="atm" value={conditions.pressure} min={0.01} step={0.1} onChange={(value) => update('pressure', value)} />
+              <ConditionInput icon={<TestTube2 />} label="pH" unit="pH" value={conditions.ph} min={0} max={14} step={0.1} onChange={(value) => update('ph', value)} />
+              <ConditionInput icon={<Timer />} label="반응 시간" unit="min" value={conditions.time} min={0} onChange={(value) => update('time', value)} />
+            </section>
+          )}
 
           <section className="mt-5 rounded-2xl border bg-white p-5">
             <div className="flex items-center justify-between gap-4"><div><h2 className="text-lg font-bold">현재 투입 물질</h2><p className="mt-1 text-sm text-muted-foreground">{materials.length ? materials.map((item) => `${item.formula} ${item.amount}${item.unit}`).join(' · ') : '투입된 물질이 없습니다.'}</p></div><FlaskConical className="size-7 shrink-0 text-primary" /></div>
@@ -116,4 +125,8 @@ export function ReactionDialog({ materials, conditions, onConditionsChange, trig
 
 function ConditionInput({ icon, label, unit, value, min, max, step = 1, onChange }: { icon: ReactNode; label: string; unit: string; value: number; min: number; max?: number; step?: number; onChange: (value: string) => void }) {
   return <label className="rounded-xl border bg-white p-3"><span className="flex items-center gap-2 text-sm font-semibold text-muted-foreground"><span className="text-primary [&_svg]:size-4">{icon}</span>{label}</span><span className="mt-2 flex items-center gap-2"><Input type="number" value={value} min={min} max={max} step={step} onChange={(event) => onChange(event.target.value)} className="h-10 text-base font-bold" /><span className="min-w-8 text-sm font-semibold text-muted-foreground">{unit}</span></span></label>;
+}
+
+function ConditionSummary({ icon, label, value }: { icon: ReactNode; label: string; value: string }) {
+  return <div className="rounded-xl border bg-white p-3"><span className="flex items-center gap-2 text-sm font-semibold text-muted-foreground"><span className="text-primary [&_svg]:size-4">{icon}</span>{label}</span><p className="mt-2 text-lg font-bold text-[#275b56]">{value}</p></div>;
 }

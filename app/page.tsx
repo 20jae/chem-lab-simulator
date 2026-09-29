@@ -11,7 +11,6 @@ import { initialMaterials, type AddedSubstance, type LabConditions } from '@/lib
 export default function Home() {
   const [materials, setMaterials] = useState<AddedSubstance[]>(initialMaterials);
   const [conditions, setConditions] = useState<LabConditions>({ temperature: 25, pressure: 1, ph: 7, time: 10 });
-  const previewMaterials = materials.slice(0, 3);
   const totalVolume = materials.filter((item) => item.unit === 'mL').reduce((sum, item) => sum + Number(item.amount || 0), 0);
 
   return (
@@ -43,8 +42,8 @@ export default function Home() {
             </CardHeader>
             <CardContent className="space-y-4 px-5 py-5">
               <MaterialDialog compact added={materials} onAddedChange={setMaterials} />
-              <div className="space-y-2">
-                {previewMaterials.map((item) => <div key={item.rowId} className="flex w-full items-center gap-3 rounded-xl bg-muted/55 p-3"><span className={`size-9 rounded-xl ${item.accent} shadow-inner`} /><span className="min-w-0 flex-1"><span className="block text-sm font-semibold">{item.name}</span><span className="block text-xs text-muted-foreground">{item.formula}</span></span><span className="text-xs font-bold text-[#275b56]">{item.amount} {item.unit}</span></div>)}
+              <div className="max-h-[232px] space-y-2 overflow-y-auto pr-1 [scrollbar-color:var(--primary)_transparent] [scrollbar-width:thin]">
+                {materials.map((item) => <div key={item.rowId} className="flex w-full items-center gap-3 rounded-xl bg-muted/55 p-3"><span className={`size-9 shrink-0 rounded-xl ${item.accent} shadow-inner`} /><span className="min-w-0 flex-1"><span className="block truncate text-sm font-semibold">{item.name}</span><span className="block text-xs text-muted-foreground">{item.formula}</span></span><span className="shrink-0 text-xs font-bold text-[#275b56]">{item.amount} {item.unit}</span></div>)}
                 {!materials.length && <div className="rounded-xl border border-dashed p-5 text-center text-sm text-muted-foreground">투입된 물질이 없습니다.</div>}
               </div>
               <MaterialDialog added={materials} onAddedChange={setMaterials} />
