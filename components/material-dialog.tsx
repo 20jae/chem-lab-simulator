@@ -6,27 +6,13 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
+import { type AddedSubstance, substances } from '@/lib/chemistry';
 
-type Substance = { id: string; name: string; formula: string; state: string; molarMass: string; description: string; accent: string };
-type AddedSubstance = Substance & { amount: string; unit: string; rowId: number };
-
-const substances: Substance[] = [
-  { id: 'nacl', name: '염화 나트륨', formula: 'NaCl', state: '고체', molarMass: '58.44 g/mol', description: '물에 잘 녹는 흰색 결정성 고체', accent: 'bg-cyan-400' },
-  { id: 'h2o', name: '증류수', formula: 'H₂O', state: '액체', molarMass: '18.02 g/mol', description: '불순물을 제거한 무색의 액체', accent: 'bg-blue-400' },
-  { id: 'hcl', name: '염산', formula: 'HCl', state: '수용액', molarMass: '36.46 g/mol', description: '염화 수소가 물에 녹은 산성 용액', accent: 'bg-amber-400' },
-  { id: 'naoh', name: '수산화 나트륨', formula: 'NaOH', state: '고체', molarMass: '40.00 g/mol', description: '강한 염기성을 띠는 흰색 고체', accent: 'bg-emerald-400' },
-  { id: 'cuso4', name: '황산 구리(Ⅱ)', formula: 'CuSO₄', state: '고체', molarMass: '159.61 g/mol', description: '푸른색을 띠는 결정성 물질', accent: 'bg-indigo-400' },
-];
-
-export function MaterialDialog({ compact = false }: { compact?: boolean }) {
+export function MaterialDialog({ compact = false, added, onAddedChange }: { compact?: boolean; added: AddedSubstance[]; onAddedChange: (materials: AddedSubstance[]) => void }) {
   const [query, setQuery] = useState('');
   const [selectedId, setSelectedId] = useState('nacl');
   const [amount, setAmount] = useState('10');
   const [unit, setUnit] = useState('g');
-  const [added, setAdded] = useState<AddedSubstance[]>([
-    { ...substances[1], amount: '100', unit: 'mL', rowId: 1 },
-    { ...substances[0], amount: '5', unit: 'g', rowId: 2 },
-  ]);
   const selected = substances.find((item) => item.id === selectedId) ?? substances[0];
   const allowedUnits = selected.state === '고체' ? ['g', 'mg', 'mol'] : ['g', 'mg', 'mL', 'mol'];
 
@@ -41,7 +27,7 @@ export function MaterialDialog({ compact = false }: { compact?: boolean }) {
 
   const addSubstance = () => {
     if (!amount || Number(amount) <= 0) return;
-    setAdded((current) => [...current, { ...selected, amount, unit, rowId: Date.now() }]);
+    onAddedChange([...added, { ...selected, amount, unit, rowId: Date.now() }]);
   };
 
   return (
@@ -79,7 +65,7 @@ export function MaterialDialog({ compact = false }: { compact?: boolean }) {
               <h2 className="text-lg font-bold">선택한 물질</h2>
               <div className="mt-3 rounded-xl bg-white/85 p-4">
                 <div className="flex items-center gap-3"><div className={`grid size-12 place-items-center rounded-xl ${selected.accent} text-white`}><Beaker className="size-6" /></div><div><p className="text-lg font-bold">{selected.name}</p><p className="font-semibold text-primary">{selected.formula}</p></div></div>
-                <dl className="mt-4 grid grid-cols-2 gap-2 text-sm"><div className="rounded-lg bg-muted/70 p-3"><dt className="text-muted-foreground">몰 질량</dt><dd className="mt-1 font-bold">{selected.molarMass}</dd></div><div className="rounded-lg bg-muted/70 p-3"><dt className="text-muted-foreground">상태</dt><dd className="mt-1 font-bold">{selected.state}</dd></div></dl>
+                <dl className="mt-4 grid grid-cols-2 gap-2 text-sm"><div className="rounded-lg bg-muted/70 p-3"><dt className="text-muted-foreground">몰 질량</dt><dd className="mt-1 font-bold">{selected.molarMass.toFixed(2)} g/mol</dd></div><div className="rounded-lg bg-muted/70 p-3"><dt className="text-muted-foreground">상태</dt><dd className="mt-1 font-bold">{selected.state}</dd></div></dl>
                 <p className="mt-3 text-sm leading-6 text-muted-foreground">{selected.description}</p>
               </div>
               <label htmlFor={`amount-${compact}`} className="mt-5 block text-sm font-semibold">투입량과 단위</label>
@@ -90,7 +76,7 @@ export function MaterialDialog({ compact = false }: { compact?: boolean }) {
 
           <section className="mt-4 rounded-2xl border bg-white p-4 sm:p-5">
             <div className="flex items-center justify-between"><div><h2 className="text-lg font-bold">현재 투입 물질</h2><p className="mt-1 text-sm text-muted-foreground">플라스크에 들어갈 물질 목록입니다.</p></div><span className="rounded-full bg-secondary px-3 py-1.5 text-sm font-semibold text-secondary-foreground">총 {added.length}개</span></div>
-            {added.length ? <div className="mt-3 divide-y">{added.map((item, index) => <div key={item.rowId} className="grid grid-cols-[32px_1fr_auto_40px] items-center gap-3 py-3"><span className="grid size-8 place-items-center rounded-lg bg-muted text-sm font-bold text-muted-foreground">{index + 1}</span><div className="min-w-0"><p className="truncate text-base font-semibold">{item.name}</p><p className="text-sm text-muted-foreground">{item.formula}</p></div><p className="text-base font-bold text-[#275b56]">{item.amount} {item.unit}</p><button type="button" onClick={() => setAdded((current) => current.filter((row) => row.rowId !== item.rowId))} aria-label={`${item.name} 삭제`} className="grid size-10 place-items-center rounded-xl text-muted-foreground hover:bg-red-50 hover:text-red-500"><Trash2 className="size-4" /></button></div>)}</div> : <div className="py-8 text-center text-sm text-muted-foreground">아직 투입한 물질이 없습니다.</div>}
+            {added.length ? <div className="mt-3 divide-y">{added.map((item, index) => <div key={item.rowId} className="grid grid-cols-[32px_1fr_auto_40px] items-center gap-3 py-3"><span className="grid size-8 place-items-center rounded-lg bg-muted text-sm font-bold text-muted-foreground">{index + 1}</span><div className="min-w-0"><p className="truncate text-base font-semibold">{item.name}</p><p className="text-sm text-muted-foreground">{item.formula}</p></div><p className="text-base font-bold text-[#275b56]">{item.amount} {item.unit}</p><button type="button" onClick={() => onAddedChange(added.filter((row) => row.rowId !== item.rowId))} aria-label={`${item.name} 삭제`} className="grid size-10 place-items-center rounded-xl text-muted-foreground hover:bg-red-50 hover:text-red-500"><Trash2 className="size-4" /></button></div>)}</div> : <div className="py-8 text-center text-sm text-muted-foreground">아직 투입한 물질이 없습니다.</div>}
           </section>
         </div>
       </DialogContent>

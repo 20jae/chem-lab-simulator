@@ -1,15 +1,19 @@
-import { ArrowRight, BookOpen, ChevronDown, FlaskConical, Gauge, Plus, Search, Sparkles, Thermometer, Timer } from 'lucide-react';
+'use client';
+
+import { useState } from 'react';
+import { BookOpen, ChevronDown, FlaskConical, Plus, Sparkles } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { MaterialDialog } from '@/components/material-dialog';
-
-const substances = [
-  { name: '염화 나트륨', formula: 'NaCl', color: 'bg-cyan-400' },
-  { name: '증류수', formula: 'H₂O', color: 'bg-blue-400' },
-  { name: '염산', formula: 'HCl', color: 'bg-amber-400' },
-];
+import { ReactionDialog } from '@/components/reaction-dialog';
+import { initialMaterials, type AddedSubstance, type LabConditions } from '@/lib/chemistry';
 
 export default function Home() {
+  const [materials, setMaterials] = useState<AddedSubstance[]>(initialMaterials);
+  const [conditions, setConditions] = useState<LabConditions>({ temperature: 25, pressure: 1, ph: 7, time: 10 });
+  const previewMaterials = materials.slice(0, 3);
+  const totalVolume = materials.filter((item) => item.unit === 'mL').reduce((sum, item) => sum + Number(item.amount || 0), 0);
+
   return (
     <main className="min-h-screen overflow-hidden bg-background text-foreground">
       <header className="border-b border-border/80 bg-white/80 backdrop-blur-xl">
@@ -35,20 +39,15 @@ export default function Home() {
         <div className="lab-grid grid gap-5 lg:grid-cols-[minmax(240px,0.8fr)_minmax(380px,1.5fr)_minmax(270px,0.9fr)]">
           <Card className="border-0 bg-card/95 py-0 shadow-[0_18px_60px_rgba(23,62,55,.08)] ring-1 ring-border">
             <CardHeader className="border-b px-5 py-5">
-              <div className="flex items-center justify-between"><div><p className="text-xs font-semibold text-primary">STEP 1</p><CardTitle className="mt-1 text-lg font-bold">물질 넣기</CardTitle></div><span className="rounded-full bg-secondary px-3 py-1 text-xs font-semibold text-secondary-foreground">3개 선택</span></div>
+              <div className="flex items-center justify-between"><div><p className="text-xs font-semibold text-primary">STEP 1</p><CardTitle className="mt-1 text-lg font-bold">물질 넣기</CardTitle></div><span className="rounded-full bg-secondary px-3 py-1 text-xs font-semibold text-secondary-foreground">{materials.length}개 투입</span></div>
             </CardHeader>
             <CardContent className="space-y-4 px-5 py-5">
-              <MaterialDialog compact />
+              <MaterialDialog compact added={materials} onAddedChange={setMaterials} />
               <div className="space-y-2">
-                {substances.map((item) => (
-                  <button key={item.formula} className="group flex w-full items-center gap-3 rounded-xl border border-transparent bg-muted/55 p-3 text-left transition-all hover:border-primary/25 hover:bg-primary/5" type="button">
-                    <span className={`size-9 rounded-xl ${item.color} shadow-inner`} />
-                    <span className="min-w-0 flex-1"><span className="block text-sm font-semibold">{item.name}</span><span className="block text-xs text-muted-foreground">{item.formula}</span></span>
-                    <Plus className="size-4 text-muted-foreground transition-colors group-hover:text-primary" />
-                  </button>
-                ))}
+                {previewMaterials.map((item) => <div key={item.rowId} className="flex w-full items-center gap-3 rounded-xl bg-muted/55 p-3"><span className={`size-9 rounded-xl ${item.accent} shadow-inner`} /><span className="min-w-0 flex-1"><span className="block text-sm font-semibold">{item.name}</span><span className="block text-xs text-muted-foreground">{item.formula}</span></span><span className="text-xs font-bold text-[#275b56]">{item.amount} {item.unit}</span></div>)}
+                {!materials.length && <div className="rounded-xl border border-dashed p-5 text-center text-sm text-muted-foreground">투입된 물질이 없습니다.</div>}
               </div>
-              <MaterialDialog />
+              <MaterialDialog added={materials} onAddedChange={setMaterials} />
             </CardContent>
           </Card>
 
@@ -62,21 +61,21 @@ export default function Home() {
               <div className="relative grid size-64 place-items-center rounded-full border border-white/80 bg-white/55 shadow-[inset_0_0_60px_rgba(45,212,191,.12),0_20px_50px_rgba(21,94,82,.08)] sm:size-72">
                 <span className="absolute left-12 top-24 size-3 rounded-full bg-cyan-300/60" /><span className="absolute right-14 top-16 size-2 rounded-full bg-emerald-300/70" /><span className="absolute bottom-16 right-12 size-4 rounded-full bg-blue-300/45" />
                 <FlaskConical className="size-44 text-[#38a8c8] drop-shadow-[0_18px_18px_rgba(14,116,144,.18)] sm:size-52" fill="rgba(56,189,248,.22)" strokeWidth={1.5} />
-                <div className="absolute bottom-12 rounded-full border border-primary/15 bg-white/85 px-3 py-1.5 text-xs font-semibold text-[#147a78] shadow-sm sm:bottom-14">총 150 mL</div>
+                <div className="absolute bottom-12 rounded-full border border-primary/15 bg-white/85 px-3 py-1.5 text-xs font-semibold text-[#147a78] shadow-sm sm:bottom-14">{totalVolume > 0 ? `액체 ${totalVolume} mL` : `${materials.length}개 물질`}</div>
               </div>
-              <div className="mt-5 flex flex-wrap justify-center gap-2">{substances.map((item) => <span key={item.formula} className="rounded-full border bg-white/80 px-3 py-1.5 text-xs font-semibold text-muted-foreground shadow-sm">{item.formula}</span>)}</div>
+              <div className="mt-5 flex flex-wrap justify-center gap-2">{materials.map((item) => <span key={item.rowId} className="rounded-full border bg-white/80 px-3 py-1.5 text-xs font-semibold text-muted-foreground shadow-sm">{item.formula}</span>)}</div>
             </CardContent>
           </Card>
 
           <div className="flex flex-col gap-5">
             <Card className="border-0 bg-card/95 py-0 shadow-[0_18px_60px_rgba(23,62,55,.08)] ring-1 ring-border">
               <CardHeader className="border-b px-5 py-5"><p className="text-xs font-semibold text-primary">STEP 2</p><CardTitle className="mt-1 text-lg font-bold">실험 조건</CardTitle></CardHeader>
-              <CardContent className="space-y-3 px-5 py-5"><Condition icon={<Thermometer />} label="온도" value="25 °C" /><Condition icon={<Gauge />} label="압력" value="1 atm" /><Condition icon={<Timer />} label="반응 시간" value="10 min" /></CardContent>
+              <CardContent className="space-y-3 px-5 py-5"><ReactionDialog trigger="temperature" materials={materials} conditions={conditions} onConditionsChange={setConditions} /><ReactionDialog trigger="pressure" materials={materials} conditions={conditions} onConditionsChange={setConditions} /><ReactionDialog trigger="ph" materials={materials} conditions={conditions} onConditionsChange={setConditions} /><ReactionDialog trigger="time" materials={materials} conditions={conditions} onConditionsChange={setConditions} /></CardContent>
             </Card>
             <Card className="flex-1 border-0 bg-[#173f3a] py-0 text-white shadow-[0_18px_60px_rgba(23,62,55,.18)] ring-0">
               <CardContent className="flex h-full min-h-48 flex-col justify-between px-5 py-5">
-                <div><p className="text-xs font-semibold text-emerald-300">STEP 3</p><h2 className="mt-2 text-xl font-bold">실험 준비 완료</h2><p className="mt-2 text-sm leading-6 text-white/65">선택한 조건으로 반응을 시작할 수 있습니다.</p></div>
-                <Button className="mt-6 h-14 w-full rounded-xl bg-[#50d8c5] text-base font-bold text-[#123e39] shadow-[0_12px_30px_rgba(80,216,197,.2)] hover:bg-[#6ee5d4]">반응 시작 <ArrowRight data-icon="inline-end" /></Button>
+                <div><p className="text-xs font-semibold text-emerald-300">STEP 3</p><h2 className="mt-2 text-xl font-bold">{materials.length ? '실험 준비 완료' : '물질을 먼저 넣어 주세요'}</h2><p className="mt-2 text-sm leading-6 text-white/65">입력한 물질과 조건으로 기본 반응을 판정하고 생성량을 계산합니다.</p></div>
+                <ReactionDialog trigger="start" materials={materials} conditions={conditions} onConditionsChange={setConditions} />
               </CardContent>
             </Card>
           </div>
@@ -84,8 +83,4 @@ export default function Home() {
       </section>
     </main>
   );
-}
-
-function Condition({ icon, label, value }: { icon: React.ReactNode; label: string; value: string }) {
-  return <button type="button" className="flex w-full items-center gap-3 rounded-xl border bg-background p-3 text-left transition-colors hover:border-primary/35"><span className="grid size-9 place-items-center rounded-lg bg-primary/10 text-primary [&_svg]:size-4">{icon}</span><span className="flex-1 text-sm font-semibold">{label}</span><span className="text-sm font-bold text-[#275b56]">{value}</span><ChevronDown className="size-4 text-muted-foreground" /></button>;
 }
