@@ -7,8 +7,9 @@ import { Input } from '@/components/ui/input';
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 import { type AddedSubstance, type LabConditions, toMoles } from '@/lib/chemistry';
 
-type Result = {
+export type ReactionResult = {
   kind: 'reaction' | 'none' | 'warning';
+  effect: 'neutralization' | 'precipitate' | 'dissolution' | 'none';
   title: string;
   equation?: string;
   observation: string;
@@ -16,9 +17,9 @@ type Result = {
   note?: string;
 };
 
-function analyzeReaction(materials: AddedSubstance[], conditions: LabConditions): Result {
+function analyzeReaction(materials: AddedSubstance[], conditions: LabConditions): ReactionResult {
   if (conditions.temperature < -273.15 || conditions.pressure <= 0 || conditions.ph < 0 || conditions.ph > 14 || conditions.time < 0) {
-    return { kind: 'warning', title: '조건을 확인해 주세요', observation: '온도, 압력, pH 또는 반응 시간의 입력 범위를 벗어났습니다.' };
+    return { kind: 'warning', effect: 'none', title: '조건을 확인해 주세요', observation: '온도, 압력, pH 또는 반응 시간의 입력 범위를 벗어났습니다.' };
   }
 
   const grouped = new Map<string, AddedSubstance[]>();
@@ -34,6 +35,7 @@ function analyzeReaction(materials: AddedSubstance[], conditions: LabConditions)
     const reacted = acid === null || base === null ? null : Math.min(acid, base);
     return {
       kind: 'reaction',
+      effect: 'neutralization',
       title: '산–염기 중화 반응 예상',
       equation: 'HCl + NaOH → NaCl + H₂O',
       observation: '발열과 함께 염화 나트륨 수용액과 물이 생성되는 반응입니다.',
@@ -43,12 +45,13 @@ function analyzeReaction(materials: AddedSubstance[], conditions: LabConditions)
   }
 
   if (grouped.has('cuso4') && grouped.has('naoh')) {
-    if (conditions.ph < 7) return { kind: 'warning', title: '침전 조건이 충분하지 않음', equation: 'CuSO₄ + 2NaOH → Cu(OH)₂↓ + Na₂SO₄', observation: '현재 pH에서는 염기성 침전 조건이 충족되지 않은 것으로 판정했습니다.', note: '기본 규칙에서는 pH 7 이상을 침전 가능 조건으로 사용합니다.' };
+    if (conditions.ph < 7) return { kind: 'warning', effect: 'none', title: '침전 조건이 충분하지 않음', equation: 'CuSO₄ + 2NaOH → Cu(OH)₂↓ + Na₂SO₄', observation: '현재 pH에서는 염기성 침전 조건이 충족되지 않은 것으로 판정했습니다.', note: '기본 규칙에서는 pH 7 이상을 침전 가능 조건으로 사용합니다.' };
     const copper = moles('cuso4');
     const base = moles('naoh');
     const reacted = copper === null || base === null ? null : Math.min(copper, base / 2);
     return {
       kind: 'reaction',
+      effect: 'precipitate',
       title: '수산화 구리(Ⅱ) 침전 반응 예상',
       equation: 'CuSO₄ + 2NaOH → Cu(OH)₂↓ + Na₂SO₄',
       observation: '푸른색 수산화 구리(Ⅱ) 침전 생성이 예상됩니다.',
@@ -58,13 +61,13 @@ function analyzeReaction(materials: AddedSubstance[], conditions: LabConditions)
   }
 
   if (grouped.has('nacl') && grouped.has('h2o')) {
-    return { kind: 'none', title: '용해 과정 예상', observation: '염화 나트륨이 물에 녹을 수 있지만, 현재 기본 규칙에서는 새로운 생성물이 생기는 화학 반응으로 판정하지 않습니다.', note: '용해도와 포화 여부 계산은 물질 DB 확장 후 추가할 수 있습니다.' };
+    return { kind: 'none', effect: 'dissolution', title: '용해 과정 예상', observation: '염화 나트륨이 물에 녹을 수 있지만, 현재 기본 규칙에서는 새로운 생성물이 생기는 화학 반응으로 판정하지 않습니다.', note: '용해도와 포화 여부 계산은 물질 DB 확장 후 추가할 수 있습니다.' };
   }
 
-  return { kind: 'none', title: '등록된 기본 반응 없음', observation: '현재 입력된 물질 조합과 일치하는 기본 반응 규칙을 찾지 못했습니다.', note: '향후 화학반응 DB를 연결하면 판정 가능한 조합을 확장할 수 있습니다.' };
+  return { kind: 'none', effect: 'none', title: '등록된 기본 반응 없음', observation: '현재 입력된 물질 조합과 일치하는 기본 반응 규칙을 찾지 못했습니다.', note: '향후 화학반응 DB를 연결하면 판정 가능한 조합을 확장할 수 있습니다.' };
 }
 
-export function ReactionDialog({ materials, conditions, onConditionsChange, trigger }: { materials: AddedSubstance[]; conditions: LabConditions; onConditionsChange: (conditions: LabConditions) => void; trigger: 'temperature' | 'pressure' | 'ph' | 'time' | 'start' }) {
+export function ReactionDialog({ materials, conditions, onConditionsChange, onReactionComplete, trigger }: { materials: AddedSubstance[]; conditions: LabConditions; onConditionsChange: (conditions: LabConditions) => void; onReactionComplete?: (result: ReactionResult) => void; trigger: 'temperature' | 'pressure' | 'ph' | 'time' | 'start' }) {
   const [hasRun, setHasRun] = useState(false);
   const result = useMemo(() => analyzeReaction(materials, conditions), [materials, conditions]);
   const triggerMap: Record<Exclude<typeof trigger, 'start'>, { icon: ReactNode; label: string; value: string }> = {
@@ -115,7 +118,7 @@ export function ReactionDialog({ materials, conditions, onConditionsChange, trig
             </section>
           ) : <div className="mt-4 rounded-2xl border border-dashed py-8 text-center text-sm text-muted-foreground">조건을 확인한 뒤 아래 버튼을 눌러 반응을 판정하세요.</div>}
 
-          <Button onClick={() => setHasRun(true)} disabled={!materials.length} className="mt-4 h-13 w-full rounded-xl text-base font-bold"><Play data-icon="inline-start" /> 판정 및 계산 실행</Button>
+          <Button onClick={() => { setHasRun(true); if (trigger === 'start') onReactionComplete?.(result); }} disabled={!materials.length} className="mt-4 h-13 w-full rounded-xl text-base font-bold"><Play data-icon="inline-start" /> 판정 및 계산 실행</Button>
           <p className="mt-3 text-center text-xs leading-5 text-muted-foreground">현재 결과는 등록된 기본 규칙과 이상적인 화학량론을 이용한 교육용 예상값이며 실제 실험 결과를 보장하지 않습니다.</p>
         </div>
       </DialogContent>

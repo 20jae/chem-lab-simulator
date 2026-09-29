@@ -1,17 +1,22 @@
 'use client';
 
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { BookOpen, ChevronDown, FlaskConical, Plus, Sparkles } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { MaterialDialog } from '@/components/material-dialog';
-import { ReactionDialog } from '@/components/reaction-dialog';
+import { ReactionDialog, type ReactionResult } from '@/components/reaction-dialog';
 import { initialMaterials, type AddedSubstance, type LabConditions } from '@/lib/chemistry';
 
 export default function Home() {
   const [materials, setMaterials] = useState<AddedSubstance[]>(initialMaterials);
   const [conditions, setConditions] = useState<LabConditions>({ temperature: 25, pressure: 1, ph: 7, time: 10 });
+  const [reactionResult, setReactionResult] = useState<ReactionResult | null>(null);
   const totalVolume = materials.filter((item) => item.unit === 'mL').reduce((sum, item) => sum + Number(item.amount || 0), 0);
+
+  useEffect(() => setReactionResult(null), [materials, conditions]);
+
+  const flaskFill = reactionResult?.effect === 'precipitate' ? 'rgba(56,189,248,.42)' : reactionResult?.effect === 'neutralization' ? 'rgba(103,232,249,.32)' : reactionResult?.effect === 'dissolution' ? 'rgba(125,211,252,.26)' : 'rgba(56,189,248,.22)';
 
   return (
     <main className="min-h-screen overflow-hidden bg-background text-foreground">
@@ -57,12 +62,16 @@ export default function Home() {
               <button className="flex items-center gap-1 rounded-lg px-2 py-1 text-sm font-semibold hover:bg-white/70" type="button">기구 선택 <ChevronDown className="size-4" /></button>
             </CardHeader>
             <CardContent className="relative flex min-h-[400px] flex-col items-center justify-center px-6 pb-7">
-              <div className="relative grid size-64 place-items-center rounded-full border border-white/80 bg-white/55 shadow-[inset_0_0_60px_rgba(45,212,191,.12),0_20px_50px_rgba(21,94,82,.08)] sm:size-72">
+              <div className={`relative grid size-64 place-items-center overflow-hidden rounded-full border border-white/80 bg-white/55 shadow-[inset_0_0_60px_rgba(45,212,191,.12),0_20px_50px_rgba(21,94,82,.08)] sm:size-72 ${reactionResult?.effect === 'neutralization' ? 'reaction-warm-glow' : ''}`}>
                 <span className="absolute left-12 top-24 size-3 rounded-full bg-cyan-300/60" /><span className="absolute right-14 top-16 size-2 rounded-full bg-emerald-300/70" /><span className="absolute bottom-16 right-12 size-4 rounded-full bg-blue-300/45" />
-                <FlaskConical className="size-44 text-[#38a8c8] drop-shadow-[0_18px_18px_rgba(14,116,144,.18)] sm:size-52" fill="rgba(56,189,248,.22)" strokeWidth={1.5} />
+                <FlaskConical className="size-44 text-[#38a8c8] drop-shadow-[0_18px_18px_rgba(14,116,144,.18)] transition-all duration-700 sm:size-52" fill={flaskFill} strokeWidth={1.5} />
+                {reactionResult?.effect === 'neutralization' && <div aria-hidden="true" className="absolute inset-0"><span className="reaction-bubble left-[39%] bottom-[28%] size-2" /><span className="reaction-bubble left-[52%] bottom-[25%] size-3 [animation-delay:.45s]" /><span className="reaction-bubble left-[61%] bottom-[31%] size-1.5 [animation-delay:.9s]" /></div>}
+                {reactionResult?.effect === 'precipitate' && <div aria-hidden="true" className="absolute bottom-[22%] left-1/2 flex w-28 -translate-x-1/2 flex-wrap items-end justify-center gap-1"><span className="size-3 rounded-full bg-sky-600/70" /><span className="size-2 rounded-full bg-blue-500/80" /><span className="size-4 rounded-full bg-cyan-600/65" /><span className="size-2.5 rounded-full bg-sky-700/75" /><span className="size-3 rounded-full bg-blue-600/70" /><span className="size-2 rounded-full bg-cyan-500/80" /><span className="size-3.5 rounded-full bg-sky-600/70" /></div>}
+                {reactionResult?.effect === 'dissolution' && <div aria-hidden="true" className="absolute inset-0"><span className="reaction-dissolve left-[38%] top-[45%]" /><span className="reaction-dissolve left-[57%] top-[56%] [animation-delay:.7s]" /><span className="reaction-dissolve left-[48%] top-[65%] [animation-delay:1.2s]" /></div>}
                 <div className="absolute bottom-12 rounded-full border border-primary/15 bg-white/85 px-3 py-1.5 text-xs font-semibold text-[#147a78] shadow-sm sm:bottom-14">{totalVolume > 0 ? `액체 ${totalVolume} mL` : `${materials.length}개 물질`}</div>
               </div>
               <div className="mt-5 flex flex-wrap justify-center gap-2">{materials.map((item) => <span key={item.rowId} className="rounded-full border bg-white/80 px-3 py-1.5 text-xs font-semibold text-muted-foreground shadow-sm">{item.formula}</span>)}</div>
+              {reactionResult && <div className={`mt-4 w-full max-w-md rounded-xl border px-4 py-3 text-center ${reactionResult.kind === 'reaction' ? 'border-primary/25 bg-white/85' : 'bg-white/65'}`} aria-live="polite"><p className="text-sm font-bold text-[#275b56]">{reactionResult.title}</p><p className="mt-1 text-xs leading-5 text-muted-foreground">{reactionResult.observation}</p></div>}
             </CardContent>
           </Card>
 
@@ -74,7 +83,7 @@ export default function Home() {
             <Card className="flex-1 border-0 bg-[#173f3a] py-0 text-white shadow-[0_18px_60px_rgba(23,62,55,.18)] ring-0">
               <CardContent className="flex h-full min-h-48 flex-col justify-between px-5 py-5">
                 <div><p className="text-xs font-semibold text-emerald-300">STEP 3</p><h2 className="mt-2 text-xl font-bold">{materials.length ? '실험 준비 완료' : '물질을 먼저 넣어 주세요'}</h2><p className="mt-2 text-sm leading-6 text-white/65">입력한 물질과 조건으로 기본 반응을 판정하고 생성량을 계산합니다.</p></div>
-                <ReactionDialog trigger="start" materials={materials} conditions={conditions} onConditionsChange={setConditions} />
+                <ReactionDialog trigger="start" materials={materials} conditions={conditions} onConditionsChange={setConditions} onReactionComplete={setReactionResult} />
               </CardContent>
             </Card>
           </div>
