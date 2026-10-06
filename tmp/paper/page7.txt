@@ -1,0 +1,74 @@
+potential of ( P/M)-Spiro-3TCzBN as CPL emitters in OLEDs, it is
+crucial to verify the optical purity of the enantiomers, ( P/M)-
+Spiro-3TCzBN, to ensure that no racemization occurs during the
+device fabrication process through vacuum thermal deposition
+(170 °C, < 5.0 × 10
+−4 pa). According to chiral HPLC analysis, the
+remaining samples showed that their enantiomeric excess (ee)
+values were slightly reduced compared to the as-synthesized
+samples, indicating minimal racemization (Fig. S56 †). Conse-
+quently, (P/M)-Spiro-3TCzBN exhibited g
+PL values of −4.20/+3.17
+× 10−4 in doped lms, which are comparable to those measured
+in solution, indicating their impressive con gurational stability
+(Fig. 4c and d). Given the comparable EL performance of both
+racemates and enantiomers, devices incorporating the enan-
+tiomers (P/M)-Spiro-3TCzBN were constructed to showcase their
+CPEL properties with an optimized device structure, showing
+the following con gurations: ITO/TAPC (55 nm)/TCTA (5 nm)/
+EMLs (3 wt% ( P/M)-Spiro-3TCzBN: 25 wt% DACT-II: PhCzBCz,
+30 nm)/TmPyPb (30 nm)/LiF (1 nm)/Al (100 nm). The EL char-
+acteristics are illustrated in Fig. 5, and the key EL data are
+summarized in Table 2. The devices achieved the maximum
+EQEs of 34.6% and 34.9%, maximum CEs of 127.1 and 128.3 cd
+A
+−1, and maximum PEs of 134.5 and 135.8 lm W −1 for (P)-Spiro-
+3TCzBN and ( M)-Spiro-3TCzBN, respectively. Furthermore,
+given the obvious CPPL characteristics observed in doped lms,
+the ( P/M)-Spiro-3TCzBN-based devices also displayed mirror
+symmetric CPEL signals with gEL factors of −3.51 × 10−4/+4.26
+× 10−4, respectively. Additionally, the CP-OLEDs demonstrated
+excellent spectral stability over a wide range of operating volt-
+ages from 3 to 8 V, indicating the e ﬃ cient FET process
+(Fig. S57 †). Consequently, a conformation-locking strategy was
+successfully proposed for constructing CP-MR-TADF materials
+with suppressed aggregation-caused quenching, enabling the
+fabrication of highly e ﬃ cient CP-OLEDs.
+Conclusions
+In conclusion, we have successfully developed a MR-TADF
+emitter, Spiro-3TCzBN, through an intramolecular
+Fig. 5 EL characteristics of the devices with a sensitizer based on (P/M)-Spiro-3TCzBN. (a) EL spectra. (b) J–V–L curves. (c) EQE-L curves. (d) CE-
+L, PE- L curves. (e) CPEL curves. (f) gEL curves.
+Table 2 Summary of the EL data for the ( P/M)-Spiro-3TCzBN-based devices with a sensitizer
+Device
+lem
+a
+[nm]
+FWHMb
+[nm/eV]
+Von
+c
+[V]
+Lmax
+d
+[cd m−2]
+CEmax
+e
+[cd A −1]
+PEmax
+f
+[lm W−1]
+EQEg
+[%]
+gEL
+h
+[10−4]
+CIEi
+(x, y)
+(M)-Spiro-3TCzBN 560 53/0.18 2.7 134 054 128.3 135.8 34.9/34.8/33.5 +4.26 (0.443, 0.546)
+(P)-Spiro-3TCzBN 560 53/0.18 2.7 139 700 127.1 134.5 34.6/34.3/32.5 −3.51 (0.442, 0.546)
+a EL peak wavelength at 100 cd m −2. b Full width at half maximum of the spectra given in wavelength and energy. c Turn-on voltage at 1 cd m −2.
+d Maximum luminance. e Maximum current e ﬃ ciency. f Maximum power e ﬃ ciency. g Maximum external quantum e ﬃ ciency, and values at 100
+and 1000 cd m −2, respectively. h Electroluminescence asymmetry factor. i Value taken at 100 cd m −2.
+© 2025 The Author(s). Published by the Royal Society of Chemistry Chem. Sci.,2 0 2 5 ,16, 11539–11547 | 11545
+Edge Article Chemical Science

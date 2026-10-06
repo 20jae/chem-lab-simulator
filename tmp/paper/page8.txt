@@ -1,0 +1,109 @@
+conformation-locking design strategy. The synthesis of the
+proof-of-concept MR-TADF containing a seven-membered
+hetero-[7]helicene unit could be straightforwardly achieved
+through a lithium-free one-shot borylation approach with
+satisfactory yields. The corresponding enantiomers, ( P)-Spiro-
+3TCzBN and ( M)-Spiro-3TCzBN, exhibited outstanding chirop-
+tical properties, including high color purity with an FWHM of
+44 nm (0.17 eV), a high F
+PL of 96%, su ﬃ cient con gurational
+stability, and mirror image CPL spectra with a gPL factor of 10−4.
+The exceptional performance was further evidenced by their
+impressive electroluminescence e ﬃ ciencies and stable CPEL
+properties, achieving EQEmax values of 34.6% and 34.9% for ( P)-
+Spiro-3TCzBN and ( M)-Spiro-3TCzBN, respectively, along with
+gEL values of −3.51 × 10−4 and +4.26 × 10−4. As a result, this
+work o ﬀers a unique pathway and a promising strategy for the
+development of helicene-based emitters for advanced opto-
+electronic applications.
+Data availability
+The data supporting the ndings of this study are available
+within the paper and the ESI. †
+Author contributions
+Xinliang Cai conducted the synthesis of compounds and OLED
+fabrication. Xinliang Cai also wrote the original dra  of the
+manuscript. Jinbei Wei and Yue Wang co-supervised Xinliang
+Cai and co-wrote the manuscript. Zhiqiang Li, Yexuan Pu and
+Youwei Wu participated in the discussion of the photo-physical
+properties. Zhiqiang Li helped with the corresponding theo-
+retical calculations and co-wrote the manuscript.
+Conﬂicts of interest
+The authors declare no con ict of interest.
+Acknowledgements
+This work was supported by the Jilin Provincial Science and
+Technology Development Plan Project (SKL202402010 and
+20240602058RC) and the National Natural Science Foundation
+of China (523B2031 and 52303230).
+Notes and references
+1( a) R. Farshchi, M. Ramsteiner, J. Herfort, A. Tahraoui and
+H. T. Grahn, Appl. Phys. Lett. , 2011, 98, 162508; ( b) D. Yang,
+P. Duan, L. Zhang and M. Liu, Nat. Commun. , 2017, 8,
+15727; ( c) J. R. Brandt, F. Salerno and M. J. Fuchter, Nat.
+Rev. Chem. , 2017, 1, 0045; ( d) X. Liang, T.-T. Liu, Z.-P. Yan,
+Y. Zhou, J. Su, X.-F. Luo, Z.-G. Wu, Y. Wang, Y.-X. Zheng
+and J.-L. Zuo, Angew. Chem., Int. Ed. , 2019, 58, 17220 –
+17225; ( e) H. Li, H. Li, W. Wang, Y. Tao, S. Wang, Q. Yang,
+Y. Jiang, C. Zheng, W. Huang and R. Chen, Angew. Chem.,
+Int. Ed. , 2020, 59, 4756 –4762; ( f) Y.-H. Kim, Y. Zhai, H. Lu,
+X. Pan, C. Xiao, E. A. Gaulding, S. P. Harvey, J. J. Berry,
+Z. V. Vardeny, J. M. Luther and M. C. Beard, Science, 2021,
+371, 1129 –1133.
+2( a) D.-W. Zhang, M. Li and C.-F. Chen, Chem. Soc. Rev., 2020,
+49, 1331 –1343; ( b) K. Dhbaibi, L. Abella, S. Meunier-Della-
+Gatta, T. Roisnel, N. Vanthuyne, B. Jamoussi, G. Pieters,
+B. Racine, E. Quesnel, J. Autschbach, J. Crassous and
+L. Favereau, Chem. Sci. , 2021, 12, 5522 –5533; ( c) F. Furlan,
+J. M. Moreno-Naranjo, N. Gasparini, S. Feldmann, J. Wade
+and M. J. Fuchter, Nat. Photonics , 2024, 18, 658 –668; ( d)
+C. Qu, Y. Xu, Y. Wang, Y. Nie, K. Ye, H. Zhang and
+Z. Zhang, Angew. Chem., Int. Ed. , 2024, 63, e202400661.
+3( a) Z.-G. Wu, H.-B. Han, Z.-P. Yan, X.-F. Luo, Y. Wang,
+Y.-X. Zheng, J.-L. Zuo and Y. Pan, Adv. Mater. , 2019, 31,
+1900524; ( b)L .F r ´ed
+´eric, A. Desmarchelier, L. Favereau and
+G. Pieters, Adv. Funct. Mater. , 2021, 31, 2010281.
+4( a) S. Feuillastre, M. Pauton, L. Gao, A. Desmarchelier,
+A. J. Riives, D. Prim, D. Tondelier, B. Ge ﬀroy, G. Muller,
+G. Clavier and G. Pieters, J. Am. Chem. Soc. , 2016, 138,
+3990–3993; ( b) M. Li, S.-H. Li, D. Zhang, M. Cai, L. Duan,
+M.-K. Fung and C.-F. Chen, Angew. Chem., Int. Ed. , 2018,
+57, 2889 –2893; ( c) F. Song, Z. Xu, Q. Zhang, Z. Zhao,
+H. Zhang, W. Zhao, Z. Qiu, C. Qi, H. Zhang, H. H. Y. Sung,
+I. D. Williams, J. W. Y. Lam, Z. Zhao, A. Qin, D. Ma and
+B. Z. Tang, Adv. Funct. Mater. , 2018, 28, 1800051; ( d)
+N. Sharma, E. Spuling, C. M. Mattern, W. Li, O. Fuhr,
+Y. Tsuchiya, C. Adachi, S. Br ¨ase, I. D. W. Samuel and
+E. Z.- Colman, Chem. Sci. , 2019, 10, 6689 –6696; ( e)
+S.-Y. Yang, Y.-K. Wang, C.-C. Peng, Z.-G. Wu, S. Yuan,
+Y.-J. Yu, H. Li, T.-T. Wang, H.-C. Li, Y.-X. Zheng, Z.-Q. Jiang
+and L.-S. Liao, J. Am. Chem. Soc. , 2020, 142, 17756 –17765;
+(f) M. Li and C.-F. Chen, Org. Chem. Front. , 2022, 9, 6441 –
+6452.
+5( a) X. Wu, J.-W. Huang, B.-K. Su, S. Wang, L. Yuan,
+W.-Q. Zheng, H. Zhang, Y.-X. Zheng, W. Zhu and
+P.-T. Chou, Adv. Mater. , 2022, 34, 2105080; ( b) Y. Yang,
+N. Li, J. Miao, X. Cao, A. Ying, K. Pan, X. Lv, F. Ni,
+Z. Huang, S. Gong and C. Yang, Angew. Chem., Int. Ed. ,
+2022, 61, e202202227; ( c) Z.-P. Yan, L. Yuan, Y. Zhang,
+M.-X. Mao, X.-J. Liao, H.-X. Ni, Z.-H. Wang, Z. An,
+Y.-X. Zheng and J.-L. Zuo, Adv. Mater. , 2022, 34, 2204253.
+6( a) T. Hatakeyama, K. Shiren, K. Nakajima, S. Nomura,
+S. Nakatsuka, K. Kinoshita, J. Ni, Y. Ono and T. Ikuta, Adv.
+Mater., 2016, 28, 2777
+–2781; ( b) Y. Kondo, K. Yoshiura,
+S. Kitera, H. Nishi, S. Oda, H. Gotoh, Y. Sasada, M. Yanai
+and T. Hatakeyama, Nat. Photonics , 2019, 13, 678 –682.
+7 Y. Xu, Q. Wang, X. Song, Y. Wang and C. Li, Chem. Eur. J. ,
+2023, 29, e202203414.
+8 Y. Xu, Q. Wang, X. Cai, C. Li and Y. Wang, Adv. Mater., 2021,
+33, 2100652.
+9( a) J.-K. Li, X.-Y. Chen, Y.-L. Guo, X.-C. Wang, A. C.-H. Sue,
+X.-Y. Cao and X.-Y. Wang, J. Am. Chem. Soc. , 2021, 143,
+17958–17963; ( b) W. Yang, N. Li, J. Miao, L. Zhan, S. Gong,
+Z. Huang and C. Yang, CCS Chem. , 2022, 4, 3463 –3471; ( c)
+F. Zhang, F. Rauch, A. Swain, T. B. Marder and P. Ravat,
+Angew. Chem., Int. Ed. , 2023, 62, e202218965; ( d) Y.-Y. Ju,
+L.-E. Xie, J.-F. Xing, Q.-S. Deng, X.-W. Chen, L.-X. Huang,
+G.-H. Nie, Y.-Z. Tan and B. Zhang, Angew. Chem., Int. Ed. ,
+11546 | Chem. Sci.,2 0 2 5 ,16, 11539–11547 © 2025 The Author(s). Publish ed by the Royal Society of Chemistry
+Chemical Science Edge Article

@@ -1,0 +1,97 @@
+OLEDs, rational molecular design strategies for constructing
+helical CP-MR-TADF emitters with suppressed quenching are
+critically needed.
+In this contribution, an intramolecular conformation-lock-
+ing strategy is proposed to construct a CP-MR-TADF emitter (( P/
+M)-Spiro-3TCzBN) featuring a twisted disk-like molecular
+structure with a seven-membered hetero-[7]helicene unit
+(Fig. 1b). Spiro-3TCzBN was designed and synthesized by using
+a carbon bridge (sp
+3 hybridized) to bond the tert-butylcarbazole
+(TCz) group from m-Cz-BNCz to the MR framework, which
+enables the introduction of intrinsically helical chirality into
+the MR-TADF framework. As the hetero-[7]helicene unit origi-
+nates from the helical extension of the MR skeleton, ( P/M)-
+Spiro-3TCzBN not only exhibits excellent CPL performance in
+both solution and lm states but also inherits the MR-TADF
+characteristics with a narrow FWHM and high F
+PL.I na d d i t i o n ,
+the orthogonal arrangement of the bulky locking group relative
+to the MR framework endowed the emitter with the ability to
+mitigate emission quenching at high concentrations. The
+sensitized CP-OLEDs employing ( P/M)-Spiro-3TCzBN as emit-
+ters demonstrated yellow circularly polarized electrolumines-
+cence peaking at 560 nm with an EQE
+max approaching 35%.
+Moreover, the gEL values of −4.26 × 10−4 and +3.51 × 10−4
+were observed for ( P)-Spiro-3TCzBN and ( M)-Spiro-3TCzBN,
+respectively. These noteworthy EL properties not only under-
+score the potential of hetero-helicenes as promising chiral
+optical materials for next-generation high-de nition CP-OLED
+displays but also demonstrate the signi cance of the confor-
+mation-locking strategy in designing CP-MR-TADF emitters.
+Results and discussion
+The synthetic route for Spiro-3TCzBN is depicted in Scheme
+S1.† An arylamine-based precursor with a de ned electron-rich
+electrophilic borylation reactive site was employed in a bora-
+Friedel–Cras reaction, facilitating the straightforward
+synthesis of compounds featuring MR characteristics (Fig. S1 †).
+The precursor was obtained through a three-step reaction
+sequence from commercially available starting materials in
+good yields, involving nucleophilic substitution followed by
+tandem nucleophilic addition and acid-catalyzed intra-
+molecular dehydration cyclization. To avoid over-borylation, the
+reaction conditions were rigorously regulated using 1 eq of BI
+3
+at 120 °C for 20 hours. Subsequently, the target molecule was
+puried by column chromatography, and then further puri ed
+by gradient sublimation under high vacuum to a ﬀord an orange
+solid with a yield of 36%. Using the same method, we also
+synthesized compounds DPh-3TCzBN and DMe-3TCzBN for
+comparison, employing diphenyl and dimethyl as the locking
+units (Scheme S2 and S3 †). The target molecules were fully
+characterized by elemental analyses and by
+1H and 13C nuclear
+magnetic resonance (NMR) spectroscopy as shown in the ESI
+(Fig. S2 –S21).† Since the properties of the enantiomers are
+almost identical, racemic compounds were chosen as the
+samples to investigate their thermal, electrochemical, and
+photophysical properties. Thermogravimetric analysis (TGA)
+measurements revealed that these rigid polycyclic compounds
+exhibit excellent thermal stability, with high decomposition
+temperatures ( T
+d, corresponding to 5% weight loss) of 479 °C
+for Spiro-3TCzBN, 486 °C for DPh-3TCzBN and 470 °C for DMe-
+3TCzBN (Fig. S22 †). These properties are advantageous for
+fabricating stable OLEDs through the vacuum thermal deposi-
+tion process. As shown in Fig. S23, † the highest occupied
+molecular orbital (HOMO) and the lowest unoccupied molec-
+ular orbital (LUMO) energy levels were calculated to be −4.87
+and −2.63 eV for Spiro-3TCzBN, −4.86 and −2.65 eV for DPh-
+3TCzBN and −4.87 eV and −2.65 eV for DMe-3TCzBN based on
+cyclic voltammetry (CV) measurements, respectively. The energy
+gaps ( E
+gs) of Spiro-3TCzBN, DPh-3TCzBN and DMe-3TCzBN
+were determined to be 2.24, 2.21 and 2.22 eV, respectively, all of
+which are smaller than that of m-Cz-BNCz (2.52 eV). This
+reduction in E
+g suggests a red-shi  in emission, which can be
+attributed to the enhanced conjugation introduced by donor
+fusion.
+The geometrical con gurations and electronic characteris-
+tics of the target molecules were simulated using density
+functional theory (DFT) and time-dependent DFT (TD-DFT)
+calculations. The calculated data, encompassing S
+1,T 1, and
+energy gap ( DEST, between the S 1 and T 1), as well as oscillator
+strength ( f) are presented in Table S1. † In the ground state, all
+three molecules exhibit a comparable distribution pattern of
+frontier molecular orbitals (Fig. 2). Speci cally, the HOMOs in
+these molecules were predominantly localized on the nitrogen
+atoms and the carbon atoms at the ortho/para-positions within
+the BNCz core, with notable contributions from the TCz moiety
+located at the meta-position relative to the boron atom.
+Fig. 2 Calculated HOMO and LUMO distributions, energy level gaps, oscillator strengths, excited state energies and associated SOC matrix
+elements for (a) Spiro-3TCzBN, (b) DPh-3TCzBN and (c) DMe-3TCzBN, respectively, at the B3LYP/6-311G (d, p) level.
+© 2025 The Author(s). Published by the Royal Society of Chemistry Chem. Sci.,2 0 2 5 ,16, 11539–11547 | 11541
+Edge Article Chemical Science

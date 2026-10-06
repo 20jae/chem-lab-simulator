@@ -1,0 +1,98 @@
+Meanwhile, the LUMOs were primarily located on the boron
+atom and the carbon atoms at the ortho/para-positions. The
+extension of the HOMOs introduced mild ICT character into the
+MR system, exerting minimal in uence on its multiple reso-
+nance properties. The calculated E
+g values are 2.907 eV for
+Spiro-3TCzBN, 2.879 eV for DPh-3TCzBN, and 2.899 eV for DMe-
+3TCzBN, respectively. These slight di ﬀerences are likely attrib-
+uted to minor perturbations in the electron cloud on the MR
+skeleton, caused by the substituents used for locking. As
+depicted in Fig. S24, † the spiro- uorene was orthogonally
+aligned with the MR skeleton, forming a dihedral angle degree
+of 89.56°. Compared to DPh-3TCzBN and DMe-3TCzBN,
+a bulkier and more rigid unit was introduced to serve as an
+eﬀective blocking group, which could signi cantly suppress
+intermolecular p–p stacking interactions. Natural transition
+orbital (NTO) calculations were also conducted to investigate
+the excited state properties of Spiro-3TCzBN, DPh-3TCzBN and
+DMe-3TCzBN (Fig. S25 –S27†). According to the NTO analysis,
+no signicant electron or hole distribution was observed on the
+carbon bridge in the target molecules. This is attributed to the
+sp
+3-hybridized carbon atoms, which do not provide p orbitals to
+participate in the delocalization of p electrons in the excited
+states of the molecules. Additionally, the electron and hole
+distributions in the S
+1 state were alternately localized on the
+atoms within the BNCz core, while the TCz moiety only
+exhibited distinct hole distributions. These results con rm that
+the electron transitions in the target molecules arise from the
+synergistic e ﬀect of short-range charge transfer (SRCT) and
+long-range charge transfer (LRCT), which is favorable for
+enhancing TADF properties. Additionally, the second triplet
+state (T
+2) exhibited diﬀerent transition symmetries compared to
+the S 1 state, resulting in notably higher <S 1j ˆHSOCjT2> values of
+0.23 cm −1 for Spiro-3TCzBN, 0.22 cm −1 for DPh-3TCzBN and
+0.25 cm −1 for DMe-3TCzBN, indicating a pronounced contri-
+bution of the T 2 state to the RISC process (Fig. 2).
+The preliminary photophysical properties of the investigated
+compounds were characterized in dilute toluene solution (1 ×
+10−5 M) and the corresponding key photophysical data are
+shown in Fig. 3 and Table 1. The emitters exhibited prominent
+absorption bands peaking at 523, 529, and 526 nm for Spiro-
+3TCzBN, DPh-3TCzBN and DMe-3TCzBN, respectively, corre-
+sponding to the HOMO to LUMO transitions, indicating the
+characteristic of the MR e ﬀect. The photoluminescence (PL)
+spectra of Spiro-3TCzBN, DPh-3TCzBN, and DMe-3TCzBN
+exhibit peak wavelengths at 556, 568, and 565 nm with bright
+yellow emission and high F
+PLso f9 2–96%, respectively. Both the
+absorption and PL spectral pro les exhibit excellent mirror
+symmetry, which can be attributed to the e ﬀective suppression
+of excited state structural deformation in the three molecules,
+in contrast to their ground state con gurations. The FWHM
+values for Spiro-3TCzBN, DPh-3TCzBN, and DMe-3TCzBN are
+44 nm (0.17 eV), 54 nm (0.18 eV), and 49 nm (0.19 eV), respec-
+tively. These values are slightly broader than those of traditional
+MR-TADF emitters, which may originate from the enhanced
+LRCT.
+13 The root mean square deviation (RMSD) values for
+Spiro-3TCzBN, DPh-3TCzBN and DMe-3TCzBN were calculated
+to be 0.32238, 0.09931 and 0.08159, indicating the small
+geometry changes in molecular structures during the excitation
+process (Fig. S28 †). Notably, Spiro-3TCzBN exhibited a larger
+RMSD value, which may result from the swinging of the spiro-
+uorene group. However, it does not contribute to the frontier
+molecular orbital distributions, resulting in no signi cant
+broadening of the FWHM. By utilizing the S
+1 energy levels ( ES1,
+2.32 eV for Spiro-3TCzBN, 2.33 eV for DPh-3TCzBN and 2.32 eV
+for DMe-3TCzBN) along with the T
+1 energy levels ( ET1, 2.24 eV
+for all three compounds), determined from the onset of uo-
+rescence and phosphorescence spectra recorded in frozen
+toluene at 77 K (Fig. S29†), the DEST values of 0.08, 0.09 and 0.08
+Fig. 3 UV/Vis absorption and ﬂuorescence spectra of Spiro-3TCzBN,
+DPh-3TCzBN and DMe-3TCzBN in toluene at 298 K.
+Table 1 Summary of the physical properties of the investigated compounds
+Emitter labs
+a [nm] lem
+b [nm] FWHM c [nm/eV] ES1
+d [eV] ET1
+e [eV] DEST
+f [eV] Eg
+g [eV] HOMO h [eV] LUMO h [eV] VPL
+i [%]
+Spiro-3TCzBN 523 556 44/0.17 2.32 2.24 0.08 2.24 −4.87 −2.63 96
+DPh-3TCzBN 529 568 54/0.18 2.33 2.24 0.09 2.21 −4.86 −2.65 92
+DMe-3TCzBN 526 565 49/0.19 2.32 2.24 0.08 2.22 −4.87 −2.65 95
+a Peak wavelength of the lowest energy absorption band. b Peak wavelength of the PL spectrum in toluene (1 × 10−5 M, 298 K). c Full width at half
+maximum of the spectra given in wavelength and energy. d Singlet energy estimated from the onset of the uorescence spectrum in toluene (10−5 M,
+77 K). e Triplet energy estimated from the onset of the phosphorescence spectrum in a frozen toluene matrix (10 −5 M, 77 K). f DEST = ES1 – ET1.
+g Optical band gap estimated from the absorption edge of the UV-vis spectrum. h Determined from cyclic voltammetry using the formula:
+EHOMO = – (Eox + 4.8) eV, ELUMO = – (Ere + 4.8) eV. i Absolute photoluminescence quantum yield measured with an integral-sphere system in N 2-
+bubbling toluene.
+11542 | Chem. Sci.,2 0 2 5 ,16, 11539–11547 © 2025 The Author(s). Published by the Royal Society of Chemistry
+Chemical Science Edge Article

@@ -1,0 +1,123 @@
+eV were obtained, respectively. As mentioned above, the rela-
+tively small values of DEST may be attributed to the contribu-
+tions from LRCT, which could realize the up-conversion of the
+triplet states to singlet states, enhancing the delayed radiation.
+Additionally, the solvatochromic e ﬀects of these compounds
+were also investigated in various solvents. As the solvent polarity
+increased from cyclohexane to dichloromethane, the emission
+maxima ( l
+PL) underwent gradual redshi s, accompanied by
+signicant broadening of the FWHM (Fig. S30 and Table S2 †).
+These observations highlight the pronounced LRCT properties
+of the molecules.
+The thin-lm properties of the investigated compounds were
+tested by doping into 9-(2-(9-phenyl-9 H-carbazol-3-yl)phenyl)-
+9H-3,90-bicarbazole (PhCzBCz) at a 3 wt% ratio. 14 The doped
+lms exhibited yellow emission, peaking at 560, 572 and 569
+nm, with exceptional FPL values of 96%, 93% and 90% for Spiro-
+3TCzBN, DPh-3TCzBN and DMe-3TCzBN, respectively
+(Fig. S31 †). To con rm the TADF properties, transient PL
+characteristics of the TADF emitters and their temperature-
+dependent behaviors were collected. The PL transient decay
+analyses were conducted for Spiro-3TCzBN, DPh-3TCzBN and
+DMe-3TCzBN at 298 K under vacuum, consisting of a nano-
+second-scale prompt component and a microsecond-scale
+delayed component, with corresponding prompt-to-delayed
+lifetime ratios ( s
+F/sTADF) of 9.4 ns/92.9 ms, 11.3 ns/93.5 ms, and
+11.8 ns/88.6 ms, respectively (Fig. S32 †). Additionally, tempera-
+ture-dependent transient PL decay spectra of the doped lms
+were recorded (Fig. S33 †). When the temperature increased
+from 80 to 320 K, the proportion of delayed uorescence
+components gradually intensi ed, conrming the participation
+of triplet excitons in light emission via the endothermic RISC
+process. Based on the aforementioned FPL and lifetimes, the
+key kinetic constants for radiative decay ( kr), non-radiative
+decay (knr), intersystem crossing ( kISC), and reverse intersystem
+crossing (kRISC) were further calculated and are listed in Tables
+S3–S5.† The kr values of these emitters are over 10 7 s−1, due to
+the locking e ﬀect that further sti ﬀens the MR skeleton. This
+results in minimal non-radiative decay energy loss and signi -
+cantly improves the e ﬃ ciency of the emitters. To quantify the
+spin-ipping exciton-transformation speed, the calculated kRISC
+values were 1.7 × 104 s−1 for all three compounds, which may
+be attributed to the synergistic e ﬀect of small DEST and large
+<S1j ˆHSOCjT2> values. Moreover, as the dopant concentration
+increased from 1 to 10 wt%, the PL spectra of Spiro-3TCzBN-
+based doped lms exhibited a more stable pro le with a slight
+redshi and broadening. In contrast, the trend of change was
+signicantly more pronounced for DPh-3TCzBN and DMe-
+3TCzBN-based doped lms, as illustrated in Fig. S34. † Notably,
+a higher F
+PL value for Spiro-3TCzBN (88%) was observed
+compared to DPh-3TCzBN (84%) and DMe-3TCzBN (72%) at
+a doping concentration of 10 wt%, which essentially stemmed
+from a mitigated exciton-related quenching process (Fig. S35 †).
+To evaluate the electroluminescent performances of the new
+emitters, OLEDs were initially fabricated using racemic Spiro-
+3TCzBN, DPh-3TCzBN and DMe-3TCzBN as guest materials
+followed by the optimized structures: indium tin oxide (ITO)/
+hole transport layer (HTL, 55 nm)/electron blocking layer (EBL,
+5 nm)/emitting layers (EMLs, 30 nm)/electron transport layer
+(ETL, 30 nm)/electron injection layer (EIL, 1 nm)/Al (100 nm). In
+this device con guration, ITO and Al served as the anode and
+cathode, respectively; TAPC (1,1-bis[(di-4-tolylamino)phenyl]
+cyclohexane), TCTA (tris(4-carbazolyl-9-ylphenyl)amine),
+TmPyPB (3,3
+0–[50–[3-(3-pyridinyl)phenyl][1,10:30,100-terphenyl]-
+3,300-diyl]bispyridine) and LiF functioned as the HTL, EBL, ETL
+and EIL, respectively; these emitters were doped into the
+PhCzBCz host with 1 –10 wt% doping concentrations to serve as
+EMLs. The energy level diagrams, employed materials, and
+device performances are depicted in Fig. S36 –S39† with the key
+device parameters summarized in Table S6. †
+The low turn-on voltages ( V
+on at 1 cd m −2)o f3 . 3 –3.4 V
+indicate e ﬃ cient carrier injection and transport in the devices.
+The turn-on voltage gradually diminishes as the doping
+concentration increases, indicating that carriers are directly
+injected into the emitter to some extent. The electrolumines-
+cence (EL) spectra of OLEDs based on Spiro-3TCzBN, DPh-
+3TCzBN, and DMe-3TCzBN, within the concentration range of
+1–10 wt%, demonstrate narrowband yellow emission with peak
+wavelengths at 560 –564 nm, 574 –578 nm, and 568 –572 nm,
+respectively. The FWHM values for these devices were 50 –52
+nm (0.17 –0.18 eV), 59 –60 nm (0.21 –0.22 eV), and 55 –59 nm
+(0.20–0.22 eV), respectively, which are in good agreement with
+the lm-state PL prole. As for Spiro-3TCzBN-based OLEDs, the
+corresponding Commission International de L'Eclairage (CIE)
+coordinates changed slightly from (0.460, 0.532) to (0.469,
+0.525), while the CIE coordinates of the other two emitters
+changed signi cantly with increasing concentration. The
+improved stability of EL spectra and higher EQE of Spiro-
+3TCzBN at a high concentration of 10 wt% can be ascribed to
+the incorporation of the sterically hindered building block
+oriented outward to the MR core, which enlarges the inter-
+molecular distance and inhibits the interchromophore aggre-
+gation and close interactions. All three devices achieve the best
+EL performance at 3 wt% doping concentration with optimized
+maximum EQE values of 33.8%, 35.4%, and 34.7%; maximum
+current e ﬃ ciency (CE) values of 125.9, 126.8, and 119.9 cd A
+−1;
+maximum power e ﬃ ciency (PE) values of 113.1, 120.7, and
+110.7 lm W −1 for Spiro-3TCzBN, DPh-3TCzBN and DMe-
+3TCzBN, respectively. Unfortunately, due to the disfavored
+RISC process caused by the intrinsically long sTADF, all devices
+based on the three emitters su ﬀer from severe e ﬃ ciency roll-
+oﬀs at 100 and 1000 cd m −2. We also fabricated non-doped
+OLEDs without the assistance of any host material; however, all
+three emitters exhibited low EQEs of around 3% and broad-
+ened spectra over 63 nm due to severe aggregation-caused
+quenching and intermolecular excitonic interactions (Fig. S40
+and Table S7 †).
+To enhance the performance of OLED devices and mitigate
+eﬃ ciency roll-o ﬀ for more practical applications, a TADF-
+sensitized device structure was implemented to optimize the
+energy transfer process and exciton utilization.
+15 In such
+a device, the generated triplet excitons could be harvested by the
+TADF-type sensitizer via the RISC process and then transferred
+to the dopant through e ﬃ cient long-range Förster energy
+transfer (FET). To fabricate highly e ﬃ cient TADF-sensitized
+© 2025 The Author(s). Published by the Royal Society of Chemistry Chem. Sci.,2 0 2 5 ,16, 11539–11547 | 11543
+Edge Article Chemical Science

@@ -1,0 +1,106 @@
+OLEDs, a classic TADF material, namely DACT-II (9-(4-(4,6-
+diphenyl-1,3,5-triazin-2-yl)phenyl)-N3,N3,N6,N6-tetraphenyl-9H-
+carbazole-3,6-diamine), was selected as the sensitizer with high
+F
+PL and large kRISC.16 Furthermore, DACT-II exhibits a remark-
+able spectral overlap between its emission spectrum and the
+absorption spectra of MR-TADF emitters, which is advanta-
+geous for the e ﬃ cient FET process (Fig. S41 †). With the assis-
+tance of the sensitizer, the blend lms composed of 25 wt%
+DACT-II and 3 wt% MR-TADF emitters in PhCzBCz exhibited
+bright yellow emissions with no residual emission of DACT-II,
+indicating eﬀective FET in these lms (Fig. S42 †). Furthermore,
+the k
+RISC values for the doped lms with a sensitizer were
+signicantly higher than those without a sensitizer (Fig. S43 and
+Tables S3 –S5†).
+The TADF-sensitized OLED devices maintained a similar
+structural con guration to the previously mentioned doped
+device, except for the EML, where a sensitized EML comprising
+PhCzBCz: 25 wt% DACT-II: 3 wt% emitters was employed.
+Compared to devices based on a single host, all sensitized
+devices exhibit lower turn-on voltages of 2.7 V, suggesting
+a more e ﬃ cient carrier injection and transport process. As
+depicted in Fig. S44 and Table S8, † the EL spectra of all sensi-
+tized devices are similar to those of the single host-based
+devices, with peak wavelengths at 560, 568, and 572 nm. The
+corresponding FWHM values for Spiro-3TCzBN, DPh-3TCzBN,
+and DMe-3TCzBN are 53/0.18, 58/0.21, and 56/0.21 nm/eV,
+respectively. The sensitized devices outperformed their coun-
+terparts, with optimized maximum EQEs, CEs and PEs of
+35.3%, 129.6 cd A
+−1 and 136.5 lm W−1 for Spiro-3TCzBN, 35.4%,
+109.7 cd A −1 and 116.3 lm W −1 for DPh-3TCzBN, 34.8%, 115.5
+cd A −1 and 127.8 lm W −1 for DMe-3TCzBN. Furthermore, they
+also show remarkable maximum luminance values of 142 450,
+151 140 and 146 590 cd m
+−2, and maintain high EQEs of 34.1%,
+30.0% and 26.9% even at a luminance of 1000 cd m −2 for Spiro-
+3TCzBN, DPh-3TCzBN and DMe-3TCzBN, respectively. The
+higher EQE retention of Spiro-3TCzBN stems from its unique
+steric con guration that blocks intermolecular Dexter energy
+transfer (Fig. S45 †). These results unambiguously demonstrate
+the superiority of TADF sensitized strategy in improving EL
+performance.
+The intramolecular conformation-locking strategy success-
+fully achieved CPPL by stabilizing the helical framework, while
+maintaining the high F
+PL and emission stability inherited from
+m-Cz-BNCz (Fig. S46 †). To further investigate the chiroptical
+properties of these compounds, the P/M racemization barriers
+of the corresponding enantiomers were rst calculated to
+account for their remarkable con gurational stability. The
+energy barriers of racemization were calculated to be 46.34,
+47.42, and 43.18 kcal mol
+−1 for Spiro-3TCzBN, DPh-3TCzBN,
+and DMe-3TCzBN, respectively, indicating that these chiral
+materials hold potential for the fabrication of CP-OLEDs.
+(Fig. S47–S49†). This high energy barrier of racemization arises
+from the strengthened intramolecular noncovalent interactions
+between the BNCz core and TCz moiety located at the meta-
+position relative to the boron atom, which can be characterized
+by the reduced density gradient (RDG) analysis. As shown in
+Fig. S50 –S52,† these interactions are mainly located at the
+spatial overlap of head-to-tail rings of the hetero-[7]helicene in
+these compounds, attributed to the TCz moiety being locked by
+carbon bridges, thereby restricting their rotation and creating
+steric hindrance. Theoretically, the photoluminescence
+dissymmetry factors ( g
+PL) could be determined using the
+equation gPL = 4×jmmj$jmej$cos q/(jmmj2+jmej2), where mm repre-
+sents the magnetic transition dipole moment, me denotes the
+electrical transition dipole moment, and q signies the angle
+between mm and me.17 Eventually, the theoretical gPL values for
+Spiro-3TCzBN, DPh-3TCzBN and DMe-3TCzBN, were calculated
+to be 1.3 × 10−3, 4.0 × 10−3 and 1.6 × 10−3, respectively
+(Fig. S53†). All the aforementioned properties verify our design
+strategy for constructing e ﬃ cient, concentration-independent
+CP-MR-TADF molecules.
+To obtain chiral enantiomers, high-performance liquid
+chromatography (HPLC) was used with a chiral stationary phase
+to separate the racemates. Unfortunately, despite the slight
+structural di ﬀerences among the three compounds, only the
+enantiomers of (P/M)-Spiro-3TCzBN were successfully separated
+(Fig. S54†). Despite extensive e ﬀorts, we were unable to identify
+suitable conditions for separating DPh-3TCzBN and DMe-
+3TCzBN enantiomers. Subsequently, the chiral properties of ( P/
+M)-Spiro-3TCzBN were thoroughly characterized to demonstrate
+its great potential as a CPL material. The corresponding circular
+dichroism (CD) spectrum of ( P)-Spiro-3TCzBN was recorded in
+toluene (1 × 10
+−5 M) and compared with the simulated spec-
+trum of (P)-Spiro-3TCzBN to conrm the absolute con guration
+(Fig. S55 †). From 350 to 420 nm, the alternating positive and
+negative peaks can be attributed to the Cotton e ﬀect, which is
+caused by the chiral nature of the electronic excited states
+(Fig. 4a).
+8,18 As shown in Fig. 4a and b, ( P/M)-Spiro-3TCzBN
+exhibited almost mirror-image CPL spectra at 550 nm with gPL
+values of −2.99/+4.08 × 10−4 in solution, respectively, signi-
+fying the chiral nature of the S 1 state. Before investigating the
+Fig. 4 (a) CD and CPPL spectra and (b) gPL curves of ( P/M)-Spiro-
+3TCzBN (measured in toluene solution (1 × 10−5 M, 298 K)). (c) CPPL
+spectra and (d) gPL curves of ( P/M)-Spiro-3TCzBN;measured in doped
+ﬁlms (3 wt% Spiro-3TCzBN:25 wt% DACT-II: PhCzBCz, 298 K).
+11544 | Chem. Sci.,2 0 2 5 ,16, 11539–11547 © 2025 The Author(s). Published by the Royal Society of Chemistry
+Chemical Science Edge Article

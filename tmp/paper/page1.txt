@@ -1,0 +1,87 @@
+Spiro-ﬂuorene locked multi-resonance delayed
+ﬂuorescence helical framework: e ﬃ cient circularly
+polarized electroluminescent materials †
+Xinliang Cai, a Jinbei Wei, *a Zhiqiang Li, b Yexuan Pu, a Youwei Wu a
+and Yue Wang *a
+Due to their excellent optical properties, circularly polarized multiple resonance thermally activated delayed
+ﬂuorescence (CP-MR-TADF) compounds are highly suitable for applications as chiral emitters with high
+eﬃ ciency and high color purity. However, challenges due to limited molecular design strategies often
+hinder their application in circularly polarized organic light-emitting diodes (CP-OLEDs). In this work,
+based on an intramolecular-locking strategy, a carbon bridge was introduced to fuse the tert-butyl
+carbazole moiety within the MR skeleton, merging the intrinsically helical chirality into the MR
+framework. The designed molecule was modi ﬁed by incorporating a locking group with signi ﬁcant
+spatial hindrance, named Spiro-3TCzBN. Consequently, the optimized CP-OLEDs with ( P/M)-Spiro-
+3TCzBN emitters achieved remarkable maximum external quantum e ﬃ ciencies of 34.6% and 34.9%,
+respectively, accompanied by clear circularly polarized electroluminescence signals with
+electroluminescence dissymmetry factors of −3.51 × 10
+−4 and +4.26 × 10−4. Furthermore, the
+electroluminescence spectra of Spiro-3TCzBN-based OLEDs show a notably stable pro ﬁle as the doping
+level increases from 1 to 10 wt%. These results indicate that the conformational locking strategy is
+a compelling design approach for helicene, which is expected to be a potential chiral optical material for
+next-generation high-resolution CP-OLED displays.
+Introduction
+Circularly polarized luminescent (CPL) materials have emerged
+as promising candidates for various optoelectronic applica-
+tions, including optical data storage and security, chiral
+sensing, bio-responsive imaging, and CPL-responsive organic
+eld-eﬀect transistors.
+1 The most notable applications are
+circularly polarized organic light-emitting diodes (CP-OLEDs)
+and 3D displays.
+2 However, conventional OLEDs rely on a wire
+grid polarizer and a quarter-wave plate to generate circularly
+polarized electroluminescence (CPEL), resulting in increased
+absorption loss due to the polarizer and a more sophisticated
+device structure. Organic emitters featuring intrinsic CPL
+emissions are crucial for fabricating CP-OLEDs since they can
+eﬀectively address these limitations. Based on excited-state
+relaxation dynamics, these materials can be categorized into
+uorescent, phosphorescent, and thermally activated delayed
+uorescent (TADF) types. In a bid to harness both singlet and
+triplet excitons through the reverse intersystem crossing (RISC)
+process, facilitating the conversion of non-radiative triplet
+excitons (T
+1) into radiative singlet excitons (S 1), metal-free
+organic circularly polarized TADF (CP-TADF) materials are more
+promising alternatives for high-performance OLEDs with low-
+cost.3
+A typical method to construct CP-TADF materials entails the
+incorporation of a chiral moiety, such as a stereogenic carbon
+center, axial chirality, or planar chirality, into the traditional
+TADF framework as a substituent.
+4 Although such chiral
+perturbation on TADF molecules provides a straightforward
+means to achieve CP-TADF properties, the corresponding
+materials su ﬀer from broad emission governed by the inevi-
+table strong intramolecular charge transfer (ICT) nature of the
+twisted donor –acceptor (D –A) structure. An additional optical
+lter or optical microcavity is needed to enhance the color
+purity of CP-TADF-based OLEDs, however, this approach
+inevitably leads to considerable energy loss and necessitates
+more intricate device architectures. Therefore, the develop-
+ment of luminescent materials capable of simultaneously
+exhibiting e ﬃ cient CPL activity and narrowband emission has
+emerged as the most direct, economical, and promising
+solution.
+5
+aState Key Laboratory of Supramolecular Structure and Materials, College of
+Chemistry, College of Electronic Science and Engineering, Jilin University,
+Changchun 130012, P. R. China. E-mail: jinbwei@jlu.edu.cn; yuewang@jlu.edu.cn
+bJihua Laboratory, 28 Huandao Nan Road, Foshan, 528200, Guangdong Province, P. R.
+China
+† Electronic supplementary information (ESI) available. See DOI:
+https://doi.org/10.1039/d5sc01958c
+Cite this: Chem. Sci.,2 0 2 5 ,16,1 1 5 3 9
+All publication charges for this article
+have been paid for by the Royal Society
+of Chemistry
+Received 12th March 2025
+Accepted 13th May 2025
+DOI: 10.1039/d5sc01958c
+rsc.li/chemical-science
+© 2025 The Author(s). Published by the Royal Society of Chemistry Chem. Sci.,2 0 2 5 ,16, 11539–11547 | 11539
+Chemical
+Science
+EDGE ARTICLE
+Published on 14 May 2025
+Licensed under CC-BY-NC 4.0

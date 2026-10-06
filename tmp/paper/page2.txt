@@ -1,0 +1,56 @@
+Addressing the critical challenge of high color purity in wide
+color gamut displays, Hatakeyama et al. pioneered the devel-
+opment of multiple resonance (MR) TADF emitters. 6 Through
+suppressing the vibrational relaxation of S 1 states by virtue of
+their rigid planar structure, these materials exhibit highly e ﬃ -
+cient emission with an inherently narrow full width at half
+maximum (FWHM), providing excellent color purity and
+outstanding electroluminescent performance. Simultaneously,
+this exciting breakthrough has also spurred signi cant interest
+in CP-MR-TADF materials, leading to remarkable advancements
+in the eld.
+7 In 2021, our group successfully developed the rst
+CP-MR-TADF materials, (R/S)-OBN-2CN-BN and (R/S)-OBN-4CN-
+BN, by attaching chiral octahydro-binaphthol derivatives to the
+periphery of 2CN-BN and 4CN-BN, respectively.
+8 The CP-OLEDs
+with high color purity achieved maximum external quantum
+eﬃ ciencies (EQE
+max) of 29.4% and 24.5%. However, this
+modication of the designed molecule at the periphery of the
+MR-TADF material leads to indiscernible circularly polarized
+photoluminescence (CPPL) and CPEL signals. Alternatively,
+helicenes demonstrate substantial potential as promising
+candidates to achieve more distinct CPPL and CPEL signals by
+allowing the fusion of chiral cores within the chromophoric
+skeletons.
+9 As shown in Fig. 1a, Duan et al. developed two
+enantiomers with bis-hetero-[n]helicene ( n = 6 and 7) struc-
+tures, namely M, M-RBNN and P, P-RBNN, by incorporating B–N
+bonds into the B –p–B framework. These enantiomers exhibited
+mirror-image pure red CPL emission in solution, and demon-
+strated excellent performance in CP-OLEDs, achieving an
+EQE
+max of 36.6% and displaying signi cant CPEL signals with
+a gEL of 10−3.10 Zheng et al. and our group reported a set of pure-
+green CP-MR-TADF materials, ( P/M)-BN-Py, by harnessing an
+edge-topology molecular engineering strategy with the corre-
+sponding CP-OLEDs showing clear CPEL signals with a gEL of
+10−3.11 Recently, a series of deep-blue hetero[6]helicene-based
+CPL emitters, DB-O and DB-S, have been strategically engi-
+neered by Yang et al. through the helical extension of an MR-
+TADF motif. The resulting CP-OLEDs achieved a record-
+breaking EQE of up to 29.3% and complied with the BT.2020
+blue standard.
+12 Although helically chiral derivatives exhibit
+important applications in this eld, derivatives possessing
+adequate con gurational stability under operational stimuli
+remain remarkably scarce. Besides, an important issue to be
+addressed for most MR-TADF OLEDs is the severe aggregation-
+caused quenching (ACQ) and spectral broadening at high
+doping concentrations due to intense p–p interactions. There-
+fore, to advance the utilization of helical architectures in CP-
+Fig. 1 (a) Reported molecular structures of CP-MR-TADF emitters with helical chirality and (b) conformation-locking strategy for high-
+performance CP-MR-TADF emitters.
+11540 | Chem. Sci.,2 0 2 5 ,16,1 1 5 3 9–11547 © 2025 The Author(s). Published by the Royal Society of Chemistry
+Chemical Science Edge Article
