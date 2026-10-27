@@ -12,6 +12,13 @@ export type Substance = {
   sourceUrl?: string;
 };
 
+export function canonicalSubstanceId(material: Pick<Substance, 'id' | 'pubchemCid' | 'formula'>) {
+  const byCid = material.pubchemCid ? substances.find((item) => item.pubchemCid === material.pubchemCid) : undefined;
+  if (byCid) return byCid.id;
+  const normalizedFormula = material.formula.replace(/[\s₀₁₂₃₄₅₆₇₈₉]/g, (character) => ({ '₀': '0', '₁': '1', '₂': '2', '₃': '3', '₄': '4', '₅': '5', '₆': '6', '₇': '7', '₈': '8', '₉': '9' }[character] ?? ''));
+  return substances.find((item) => item.formula.replace(/[\s₀₁₂₃₄₅₆₇₈₉]/g, (character) => ({ '₀': '0', '₁': '1', '₂': '2', '₃': '3', '₄': '4', '₅': '5', '₆': '6', '₇': '7', '₈': '8', '₉': '9' }[character] ?? '')) === normalizedFormula)?.id ?? material.id;
+}
+
 export type AddedSubstance = Substance & {
   amount: string;
   unit: string;
@@ -49,6 +56,15 @@ export const substances: Substance[] = [
   { id: 'o2', name: '산소', formula: 'O₂', state: '기체', molarMass: 32, description: '연소를 돕는 무색 기체', accent: 'bg-blue-500', source: 'curated', pubchemCid: 977 },
   { id: 'h2', name: '수소', formula: 'H₂', state: '기체', molarMass: 2.016, description: '가연성이 매우 큰 무색 기체', accent: 'bg-cyan-300', source: 'curated', pubchemCid: 783 },
   { id: 'zncl2', name: '염화 아연', formula: 'ZnCl₂', state: '고체', molarMass: 136.28, description: '물에 잘 녹는 흰색 염', accent: 'bg-zinc-300', source: 'curated', pubchemCid: 5727 },
+  { id: 'koh', name: '수산화 칼륨', formula: 'KOH', state: '고체', molarMass: 56.11, description: '강한 염기성을 띠는 흰색 고체', accent: 'bg-emerald-500', source: 'curated', pubchemCid: 14797 },
+  { id: 'ch3cooh', name: '아세트산', formula: 'CH₃COOH', state: '액체', molarMass: 60.05, density: 1.05, description: '식초의 산성 성분인 약산', accent: 'bg-amber-300', source: 'curated', pubchemCid: 176 },
+  { id: 'pbno32', name: '질산 납(Ⅱ)', formula: 'Pb(NO₃)₂', state: '고체', molarMass: 331.21, description: '납 이온을 포함하는 유독성 무기염', accent: 'bg-slate-500', source: 'curated', pubchemCid: 24924 },
+  { id: 'ki', name: '아이오딘화 칼륨', formula: 'KI', state: '고체', molarMass: 166.00, description: '물에 잘 녹는 흰색 결정', accent: 'bg-violet-300', source: 'curated', pubchemCid: 4875 },
+  { id: 'na2co3', name: '탄산 나트륨', formula: 'Na₂CO₃', state: '고체', molarMass: 105.99, description: '염기성을 띠는 흰색 무기염', accent: 'bg-blue-200', source: 'curated', pubchemCid: 10340 },
+  { id: 'mg', name: '마그네슘', formula: 'Mg', state: '고체', molarMass: 24.31, description: '산과 반응하여 수소를 발생시키는 금속', accent: 'bg-neutral-300', source: 'curated', pubchemCid: 5462224 },
+  { id: 'iron', name: '철', formula: 'Fe', state: '고체', molarMass: 55.85, description: '치환 반응에 사용되는 금속', accent: 'bg-stone-500', source: 'curated', pubchemCid: 23925 },
+  { id: 'copper', name: '구리', formula: 'Cu', state: '고체', molarMass: 63.55, description: '붉은빛을 띠는 금속', accent: 'bg-orange-500', source: 'curated', pubchemCid: 23978 },
+  { id: 'nh4cl', name: '염화 암모늄', formula: 'NH₄Cl', state: '고체', molarMass: 53.49, description: '암모늄 이온을 포함하는 흰색 염', accent: 'bg-gray-300', source: 'curated', pubchemCid: 25517 },
 ];
 
 export async function searchPubChem(query: string, signal?: AbortSignal): Promise<Substance[]> {

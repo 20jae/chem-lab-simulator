@@ -5,7 +5,7 @@ import { AlertTriangle, CheckCircle2, FlaskConical, Gauge, PackageCheck, Play, S
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
-import { substances, type AddedSubstance, type LabConditions, toMoles } from '@/lib/chemistry';
+import { canonicalSubstanceId, substances, type AddedSubstance, type LabConditions, toMoles } from '@/lib/chemistry';
 import { reactionDatabase, type ReactionDefinition } from '@/lib/reaction-database';
 
 export type ReactionResult = {
@@ -52,7 +52,10 @@ export function analyzeReaction(materials: AddedSubstance[], conditions: LabCond
   }
 
   const grouped = new Map<string, AddedSubstance[]>();
-  materials.forEach((material) => grouped.set(material.id, [...(grouped.get(material.id) ?? []), material]));
+  materials.forEach((material) => {
+    const id = canonicalSubstanceId(material);
+    grouped.set(id, [...(grouped.get(id) ?? []), material]);
+  });
   const moles = (id: string) => {
     const values = (grouped.get(id) ?? []).map(toMoles);
     return values.some((value) => value === null) ? null : values.reduce<number>((sum, value) => sum + (value ?? 0), 0);
