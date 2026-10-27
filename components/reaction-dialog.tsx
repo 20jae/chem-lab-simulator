@@ -5,11 +5,12 @@ import { AlertTriangle, CheckCircle2, FlaskConical, Gauge, PackageCheck, Play, S
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
-import { type AddedSubstance, type LabConditions, toMoles } from '@/lib/chemistry';
+import { substances, type AddedSubstance, type LabConditions, toMoles } from '@/lib/chemistry';
+import { reactionDatabase, type ReactionDefinition } from '@/lib/reaction-database';
 
 export type ReactionResult = {
   kind: 'reaction' | 'none' | 'warning';
-  effect: 'neutralization' | 'precipitate' | 'dissolution' | 'none';
+  effect: 'neutralization' | 'precipitate' | 'dissolution' | 'gas' | 'none';
   title: string;
   equation?: string;
   observation: string;
@@ -39,6 +40,12 @@ function originalAmount(material: AddedSubstance): ResultSpecies {
   return { name: material.name, formula: material.formula, amount: `${material.amount} ${material.unit}`, role: '미반응 물질' };
 }
 
+function conditionWarning(reaction: ReactionDefinition, materials: AddedSubstance[], conditions: LabConditions): ReactionResult | null {
+  if (reaction.minPh !== undefined && conditions.ph < reaction.minPh) return { kind: 'warning', effect: 'none', title: '반응 조건이 충분하지 않음', equation: reaction.equation, observation: `현재 pH ${conditions.ph}에서는 ${reaction.title}의 최소 pH ${reaction.minPh} 조건을 충족하지 않습니다.`, note: reaction.note, products: [], remainingReactants: materials.map(originalAmount) };
+  if (reaction.maxPh !== undefined && conditions.ph > reaction.maxPh) return { kind: 'warning', effect: 'none', title: '반응 조건이 충분하지 않음', equation: reaction.equation, observation: `현재 pH ${conditions.ph}에서는 ${reaction.title}의 최대 pH ${reaction.maxPh} 조건을 벗어납니다.`, note: reaction.note, products: [], remainingReactants: materials.map(originalAmount) };
+  return null;
+}
+
 function analyzeReaction(materials: AddedSubstance[], conditions: LabConditions): ReactionResult {
   if (conditions.temperature < -273.15 || conditions.pressure <= 0 || conditions.ph < 0 || conditions.ph > 14 || conditions.time < 0) {
     return { kind: 'warning', effect: 'none', title: '조건을 확인해 주세요', observation: '온도, 압력, pH 또는 반응 시간의 입력 범위를 벗어났습니다.', ...emptyResultLists };
@@ -51,66 +58,39 @@ function analyzeReaction(materials: AddedSubstance[], conditions: LabConditions)
     return values.some((value) => value === null) ? null : values.reduce<number>((sum, value) => sum + (value ?? 0), 0);
   };
 
-  if (grouped.has('hcl') && grouped.has('naoh')) {
-    const acid = moles('hcl');
-    const base = moles('naoh');
-    const reacted = acid === null || base === null ? null : Math.min(acid, base);
-    const remainingReactants = reacted === null
-      ? materials.filter((item) => item.id === 'hcl' || item.id === 'naoh').map(originalAmount)
-      : [
-          { name: '염산', formula: 'HCl', amount: formatMoles(Math.max(0, acid! - reacted)), role: acid! <= base! ? '전량 반응' : '남은 반응물' },
-          { name: '수산화 나트륨', formula: 'NaOH', amount: formatMoles(Math.max(0, base! - reacted)), role: base! <= acid! ? '전량 반응' : '남은 반응물' },
-        ];
-    return {
-      kind: 'reaction',
-      effect: 'neutralization',
-      title: '산–염기 중화 반응 예상',
-      equation: 'HCl + NaOH → NaCl + H₂O',
-      observation: '발열과 함께 염화 나트륨 수용액과 물이 생성되는 반응입니다.',
-      calculation: reacted === null ? '수용액의 농도 정보가 없어 생성량을 계산할 수 없습니다.' : `이론상 NaCl과 H₂O가 각각 약 ${reacted.toFixed(4)} mol 생성됩니다.`,
-      note: `현재 설정 pH ${conditions.ph}, ${conditions.temperature} °C 기준의 단순 판정입니다.`,
-      products: [
-        { name: '염화 나트륨', formula: 'NaCl', amount: reacted === null ? '생성량 계산 불가' : formatMoles(reacted), role: '생성물' },
-        { name: '물', formula: 'H₂O', amount: reacted === null ? '생성량 계산 불가' : formatMoles(reacted), role: '생성물' },
-      ],
-      remainingReactants,
-      limitingReactant: reacted === null ? '농도 정보 부족으로 판정 불가' : acid! < base! ? 'HCl' : base! < acid! ? 'NaOH' : 'HCl · NaOH (당량)',
-    };
-  }
+  const reaction = reactionDatabase.find((candidate) => candidate.reactants.every((reactant) => grouped.has(reactant.id)));
+  if (!reaction) return { kind: 'none', effect: 'none', title: '등록된 반응 없음', observation: '현재 투입된 물질 조합과 일치하는 반응을 찾지 못했습니다. PubChem 물질 검색 결과도 반응 DB에 반응식이 등록되어 있어야 판정할 수 있습니다.', note: '반응 DB는 일반 실험 반응부터 단계적으로 확장 중입니다.', products: [], remainingReactants: materials.map(originalAmount) };
 
-  if (grouped.has('cuso4') && grouped.has('naoh')) {
-    if (conditions.ph < 7) return { kind: 'warning', effect: 'none', title: '침전 조건이 충분하지 않음', equation: 'CuSO₄ + 2NaOH → Cu(OH)₂↓ + Na₂SO₄', observation: '현재 pH에서는 염기성 침전 조건이 충족되지 않은 것으로 판정했습니다.', note: '기본 규칙에서는 pH 7 이상을 침전 가능 조건으로 사용합니다.', products: [], remainingReactants: materials.map(originalAmount) };
-    const copper = moles('cuso4');
-    const base = moles('naoh');
-    const reacted = copper === null || base === null ? null : Math.min(copper, base / 2);
-    const remainingReactants = reacted === null
-      ? materials.filter((item) => item.id === 'cuso4' || item.id === 'naoh').map(originalAmount)
-      : [
-          { name: '황산 구리(Ⅱ)', formula: 'CuSO₄', amount: formatMoles(Math.max(0, copper! - reacted)), role: copper! <= base! / 2 ? '전량 반응' : '남은 반응물' },
-          { name: '수산화 나트륨', formula: 'NaOH', amount: formatMoles(Math.max(0, base! - reacted * 2)), role: base! / 2 <= copper! ? '전량 반응' : '남은 반응물' },
-        ];
-    return {
-      kind: 'reaction',
-      effect: 'precipitate',
-      title: '수산화 구리(Ⅱ) 침전 반응 예상',
-      equation: 'CuSO₄ + 2NaOH → Cu(OH)₂↓ + Na₂SO₄',
-      observation: '푸른색 수산화 구리(Ⅱ) 침전 생성이 예상됩니다.',
-      calculation: reacted === null ? '입력 단위를 몰로 환산할 수 없어 생성량을 계산하지 않았습니다.' : `이론상 Cu(OH)₂ 약 ${(reacted * 97.56).toFixed(3)} g 생성이 가능합니다.`,
-      note: '완전 반응과 순수 시약을 가정한 이론값입니다.',
-      products: [
-        { name: '수산화 구리(Ⅱ)', formula: 'Cu(OH)₂', amount: reacted === null ? '생성량 계산 불가' : `${(reacted * 97.56).toFixed(3)} g`, role: '침전 생성물' },
-        { name: '황산 나트륨', formula: 'Na₂SO₄', amount: reacted === null ? '생성량 계산 불가' : formatMoles(reacted), role: '생성물' },
-      ],
-      remainingReactants,
-      limitingReactant: reacted === null ? '투입 단위 정보 부족으로 판정 불가' : copper! < base! / 2 ? 'CuSO₄' : base! / 2 < copper! ? 'NaOH' : 'CuSO₄ · NaOH (당량)',
-    };
-  }
+  const warning = conditionWarning(reaction, materials, conditions);
+  if (warning) return warning;
 
-  if (grouped.has('nacl') && grouped.has('h2o')) {
-    return { kind: 'none', effect: 'dissolution', title: '용해 과정 예상', equation: 'NaCl(s) → Na⁺(aq) + Cl⁻(aq)', observation: '염화 나트륨이 물에 녹아 나트륨 이온과 염화 이온으로 분산되는 과정입니다.', note: '용해도와 포화 여부 계산은 물질 DB 확장 후 추가할 수 있습니다.', products: [{ name: '나트륨 이온', formula: 'Na⁺(aq)', amount: '수용액 내 분산', role: '용해 이온' }, { name: '염화 이온', formula: 'Cl⁻(aq)', amount: '수용액 내 분산', role: '용해 이온' }], remainingReactants: materials.filter((item) => item.id === 'h2o').map((item) => ({ ...originalAmount(item), role: '용매' })) };
-  }
+  if (reaction.effect === 'dissolution') return { kind: 'none', effect: 'dissolution', title: reaction.title, equation: reaction.equation, observation: reaction.observation, note: reaction.note, products: reaction.products.map((product) => ({ name: product.name, formula: product.formula, amount: '수용액 내 분산', role: product.role ?? '용해 이온' })), remainingReactants: materials.filter((item) => item.id === 'h2o').map((item) => ({ ...originalAmount(item), role: '용매' })) };
 
-  return { kind: 'none', effect: 'none', title: '등록된 기본 반응 없음', observation: '현재 입력된 물질 조합과 일치하는 기본 반응 규칙을 찾지 못했습니다.', note: '향후 화학반응 DB를 연결하면 판정 가능한 조합을 확장할 수 있습니다.', products: [], remainingReactants: materials.map(originalAmount) };
+  const extents = reaction.reactants.map((reactant) => {
+    const value = moles(reactant.id);
+    return value === null ? null : value / reactant.coefficient;
+  });
+  const canCalculate = extents.every((value) => value !== null && Number.isFinite(value));
+  const extent = canCalculate ? Math.min(...(extents as number[])) : null;
+  const limitingIndexes = extent === null ? [] : extents.map((value, index) => value !== null && Math.abs(value - extent) < 1e-10 ? index : -1).filter((index) => index >= 0);
+  const remainingReactants = reaction.reactants.map((reactant) => {
+    const material = grouped.get(reactant.id)![0];
+    const total = moles(reactant.id);
+    const remaining = extent === null || total === null ? null : Math.max(0, total - extent * reactant.coefficient);
+    return { name: material.name, formula: material.formula, amount: remaining === null ? `${material.amount} ${material.unit}` : formatMoles(remaining), role: remaining === 0 ? '전량 반응' : '남은 반응물' };
+  });
+  const products = reaction.products.map((product) => {
+    const productMoles = extent === null ? null : extent * product.coefficient;
+    const amount = productMoles === null ? '생성량 계산 불가' : product.displayAs === 'g' ? `${(productMoles * product.molarMass).toFixed(3)} g` : formatMoles(productMoles);
+    return { name: product.name, formula: product.formula, amount, role: product.role ?? '생성물' };
+  });
+  const limitingReactant = extent === null ? '투입 단위 또는 농도 정보 부족으로 판정 불가' : limitingIndexes.map((index) => {
+    const id = reaction.reactants[index].id;
+    return grouped.get(id)?.[0].formula ?? substances.find((item) => item.id === id)?.formula ?? id;
+  }).join(' · ');
+
+  return { kind: reaction.kind ?? 'reaction', effect: reaction.effect, title: reaction.title, equation: reaction.equation, observation: reaction.observation, calculation: extent === null ? '일부 물질을 몰로 환산할 수 없어 생성량 계산을 생략했습니다.' : `반응 진행량은 ${formatMoles(extent)}이며 반응식의 계수비를 적용했습니다.`, note: reaction.note, products, remainingReactants, limitingReactant };
+
 }
 
 export function ReactionDialog({ materials, conditions, onConditionsChange, onReactionComplete, trigger }: { materials: AddedSubstance[]; conditions: LabConditions; onConditionsChange: (conditions: LabConditions) => void; onReactionComplete?: (result: ReactionResult) => void; trigger: 'temperature' | 'pressure' | 'ph' | 'time' | 'start' }) {

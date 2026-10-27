@@ -1,8 +1,7 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { BookOpen, ChevronDown, FlaskConical, Plus, Sparkles } from 'lucide-react';
-import { Button } from '@/components/ui/button';
+import { ChevronDown, FlaskConical, Sparkles } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { MaterialDialog } from '@/components/material-dialog';
 import { ReactionDialog, type ReactionResult } from '@/components/reaction-dialog';
@@ -37,7 +36,7 @@ export default function Home() {
             <h1 className="text-3xl font-bold tracking-[-0.04em] sm:text-4xl">새로운 반응을 설계해 보세요</h1>
             <p className="mt-3 max-w-xl text-sm leading-6 text-muted-foreground sm:text-base">물질과 실험 조건을 선택한 뒤 중앙 플라스크에서 반응을 관찰할 수 있습니다.</p>
           </div>
-          <Button variant="outline" className="h-11 self-start rounded-xl px-4 md:self-auto"><BookOpen data-icon="inline-start" /> 물질 도감</Button>
+          <MaterialDialog catalog added={materials} onAddedChange={setMaterials} />
         </div>
 
         <div className="lab-grid grid gap-5 lg:grid-cols-[minmax(240px,0.8fr)_minmax(380px,1.5fr)_minmax(270px,0.9fr)]">
@@ -65,7 +64,7 @@ export default function Home() {
               <div className={`relative grid size-64 place-items-center overflow-hidden rounded-full border border-white/80 bg-white/55 shadow-[inset_0_0_60px_rgba(45,212,191,.12),0_20px_50px_rgba(21,94,82,.08)] sm:size-72 ${reactionResult?.effect === 'neutralization' ? 'reaction-warm-glow' : ''}`}>
                 <span className="absolute left-12 top-24 size-3 rounded-full bg-cyan-300/60" /><span className="absolute right-14 top-16 size-2 rounded-full bg-emerald-300/70" /><span className="absolute bottom-16 right-12 size-4 rounded-full bg-blue-300/45" />
                 <FlaskConical className="size-44 text-[#38a8c8] drop-shadow-[0_18px_18px_rgba(14,116,144,.18)] transition-all duration-700 sm:size-52" fill={flaskFill} strokeWidth={1.5} />
-                {reactionResult?.effect === 'neutralization' && <div aria-hidden="true" className="absolute inset-0"><span className="reaction-bubble left-[39%] bottom-[28%] size-2" /><span className="reaction-bubble left-[52%] bottom-[25%] size-3 [animation-delay:.45s]" /><span className="reaction-bubble left-[61%] bottom-[31%] size-1.5 [animation-delay:.9s]" /></div>}
+                {(reactionResult?.effect === 'neutralization' || reactionResult?.effect === 'gas') && <div aria-hidden="true" className="absolute inset-0"><span className="reaction-bubble left-[39%] bottom-[28%] size-2" /><span className="reaction-bubble left-[52%] bottom-[25%] size-3 [animation-delay:.45s]" /><span className="reaction-bubble left-[61%] bottom-[31%] size-1.5 [animation-delay:.9s]" />{reactionResult?.effect === 'gas' && <><span className="reaction-bubble left-[45%] bottom-[34%] size-3.5 [animation-delay:.2s]" /><span className="reaction-bubble left-[58%] bottom-[38%] size-2 [animation-delay:1.1s]" /></>}</div>}
                 {reactionResult?.effect === 'precipitate' && <div aria-hidden="true" className="absolute bottom-[22%] left-1/2 flex w-28 -translate-x-1/2 flex-wrap items-end justify-center gap-1"><span className="size-3 rounded-full bg-sky-600/70" /><span className="size-2 rounded-full bg-blue-500/80" /><span className="size-4 rounded-full bg-cyan-600/65" /><span className="size-2.5 rounded-full bg-sky-700/75" /><span className="size-3 rounded-full bg-blue-600/70" /><span className="size-2 rounded-full bg-cyan-500/80" /><span className="size-3.5 rounded-full bg-sky-600/70" /></div>}
                 {reactionResult?.effect === 'dissolution' && <div aria-hidden="true" className="absolute inset-0"><span className="reaction-dissolve left-[38%] top-[45%]" /><span className="reaction-dissolve left-[57%] top-[56%] [animation-delay:.7s]" /><span className="reaction-dissolve left-[48%] top-[65%] [animation-delay:1.2s]" /></div>}
                 <div className="absolute bottom-12 rounded-full border border-primary/15 bg-white/85 px-3 py-1.5 text-xs font-semibold text-[#147a78] shadow-sm sm:bottom-14">{totalVolume > 0 ? `액체 ${totalVolume} mL` : `${materials.length}개 물질`}</div>
