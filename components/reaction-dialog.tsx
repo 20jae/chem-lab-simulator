@@ -46,7 +46,7 @@ function conditionWarning(reaction: ReactionDefinition, materials: AddedSubstanc
   return null;
 }
 
-function analyzeReaction(materials: AddedSubstance[], conditions: LabConditions): ReactionResult {
+export function analyzeReaction(materials: AddedSubstance[], conditions: LabConditions): ReactionResult {
   if (conditions.temperature < -273.15 || conditions.pressure <= 0 || conditions.ph < 0 || conditions.ph > 14 || conditions.time < 0) {
     return { kind: 'warning', effect: 'none', title: '조건을 확인해 주세요', observation: '온도, 압력, pH 또는 반응 시간의 입력 범위를 벗어났습니다.', ...emptyResultLists };
   }
