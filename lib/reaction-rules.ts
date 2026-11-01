@@ -7,7 +7,16 @@ type AcidProfile = { formula: string; name: string; protons: number; anion: stri
 type BaseProfile = { formula: string; name: string; hydroxides: number; cation: string; cationName: string };
 
 const subscriptMap: Record<string, string> = { '₀': '0', '₁': '1', '₂': '2', '₃': '3', '₄': '4', '₅': '5', '₆': '6', '₇': '7', '₈': '8', '₉': '9' };
-const normalizeFormula = (formula: string) => formula.replace(/[\s₀-₉]/g, (value) => subscriptMap[value] ?? '').replace(/\(aq\)|\(s\)|\(l\)|\(g\)/gi, '');
+const formulaAliases: Record<string, string> = {
+  ClH: 'HCl', H2O4S: 'H2SO4', C2H4O2: 'CH3COOH', HNaO: 'NaOH', HKO: 'KOH', CaH2O2: 'Ca(OH)2', H2MgO2: 'Mg(OH)2',
+  CCaO3: 'CaCO3', CMgO3: 'MgCO3', CNa2O3: 'Na2CO3', CK2O3: 'K2CO3', CHNaO3: 'NaHCO3',
+  ClH4N: 'NH4Cl', H4N2O3: 'NH4NO3', H8N2O4S: '(NH4)2SO4', CuO4S: 'CuSO4', Na2O4S: 'Na2SO4',
+  AgNO3: 'AgNO3', BaCl2: 'BaCl2', CaCl2: 'CaCl2', Cl3Fe: 'FeCl3', N2O6Pb: 'Pb(NO3)2', IK: 'KI',
+};
+const normalizeFormula = (formula: string) => {
+  const plain = formula.replace(/[\s₀-₉]/g, (value) => subscriptMap[value] ?? '').replace(/\(aq\)|\(s\)|\(l\)|\(g\)/gi, '');
+  return formulaAliases[plain] ?? plain;
+};
 const gcd = (a: number, b: number): number => b ? gcd(b, a % b) : Math.abs(a);
 const lcm = (a: number, b: number) => Math.abs(a * b) / gcd(a, b);
 
