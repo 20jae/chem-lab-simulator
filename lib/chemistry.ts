@@ -7,7 +7,7 @@ export type Substance = {
   description: string;
   accent: string;
   density?: number;
-  source?: 'curated' | 'pubchem';
+  source?: 'curated' | 'pubchem' | 'supabase';
   pubchemCid?: number;
   sourceUrl?: string;
 };

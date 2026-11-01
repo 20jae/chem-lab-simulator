@@ -8,7 +8,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 import { searchPubChem, type AddedSubstance, type Substance, substances } from '@/lib/chemistry';
 
-export function MaterialDialog({ compact = false, catalog = false, added, onAddedChange }: { compact?: boolean; catalog?: boolean; added: AddedSubstance[]; onAddedChange: (materials: AddedSubstance[]) => void }) {
+export function MaterialDialog({ compact = false, catalog = false, added, onAddedChange, substancesData = substances }: { compact?: boolean; catalog?: boolean; added: AddedSubstance[]; onAddedChange: (materials: AddedSubstance[]) => void; substancesData?: Substance[] }) {
   const [query, setQuery] = useState('');
   const [selectedId, setSelectedId] = useState('nacl');
   const [amount, setAmount] = useState('10');
@@ -17,10 +17,10 @@ export function MaterialDialog({ compact = false, catalog = false, added, onAdde
   const [isSearching, setIsSearching] = useState(false);
   const localResults = useMemo(() => {
     const term = query.trim().toLowerCase();
-    return term ? substances.filter((item) => `${item.name} ${item.formula}`.toLowerCase().includes(term)) : substances;
-  }, [query]);
+    return term ? substancesData.filter((item) => `${item.name} ${item.formula}`.toLowerCase().includes(term)) : substancesData;
+  }, [query, substancesData]);
   const filtered = useMemo(() => [...localResults, ...remoteResults.filter((remote) => !localResults.some((local) => local.pubchemCid === remote.pubchemCid))], [localResults, remoteResults]);
-  const selected = filtered.find((item) => item.id === selectedId) ?? substances.find((item) => item.id === selectedId) ?? filtered[0] ?? substances[0];
+  const selected = filtered.find((item) => item.id === selectedId) ?? substancesData.find((item) => item.id === selectedId) ?? filtered[0] ?? substancesData[0];
   const allowedUnits = selected.state === '기체' ? ['mol'] : selected.state === '액체' || selected.state === '수용액' ? ['g', 'mg', 'mL', 'mol'] : ['g', 'mg', 'mol'];
 
   useEffect(() => {

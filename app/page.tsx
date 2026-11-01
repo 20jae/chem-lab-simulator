@@ -1,20 +1,34 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { ChevronDown, FlaskConical, Sparkles } from 'lucide-react';
+import { ChevronDown, Database, FlaskConical, Sparkles } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { MaterialDialog } from '@/components/material-dialog';
 import { ReactionDialog, type ReactionResult } from '@/components/reaction-dialog';
 import { ReactionLibraryDialog } from '@/components/reaction-library-dialog';
-import { initialMaterials, type AddedSubstance, type LabConditions } from '@/lib/chemistry';
+import { initialMaterials, substances, type AddedSubstance, type LabConditions } from '@/lib/chemistry';
+import { reactionDatabase } from '@/lib/reaction-database';
+import { loadCatalog } from '@/lib/catalog-data';
 
 export default function Home() {
   const [materials, setMaterials] = useState<AddedSubstance[]>(initialMaterials);
   const [conditions, setConditions] = useState<LabConditions>({ temperature: 25, pressure: 1, ph: 7, time: 10 });
   const [reactionResult, setReactionResult] = useState<ReactionResult | null>(null);
+  const [availableSubstances, setAvailableSubstances] = useState(substances);
+  const [availableReactions, setAvailableReactions] = useState(reactionDatabase);
+  const [databaseStatus, setDatabaseStatus] = useState<'connecting' | 'connected' | 'fallback'>('connecting');
   const totalVolume = materials.filter((item) => item.unit === 'mL').reduce((sum, item) => sum + Number(item.amount || 0), 0);
 
   useEffect(() => setReactionResult(null), [materials, conditions]);
+  useEffect(() => {
+    const controller = new AbortController();
+    loadCatalog(controller.signal).then((catalog) => {
+      setAvailableSubstances(catalog.materials);
+      setAvailableReactions(catalog.reactions);
+      setDatabaseStatus('connected');
+    }).catch(() => setDatabaseStatus('fallback'));
+    return () => controller.abort();
+  }, []);
 
   const flaskFill = reactionResult?.effect === 'precipitate' ? 'rgba(56,189,248,.42)' : reactionResult?.effect === 'neutralization' ? 'rgba(103,232,249,.32)' : reactionResult?.effect === 'dissolution' ? 'rgba(125,211,252,.26)' : 'rgba(56,189,248,.22)';
 
@@ -26,7 +40,7 @@ export default function Home() {
             <div className="grid size-11 place-items-center rounded-2xl bg-primary text-primary-foreground shadow-[0_10px_30px_rgba(16,185,129,.22)]"><FlaskConical className="size-6" strokeWidth={2.2} /></div>
             <div><p className="text-lg font-bold tracking-tight">CHEM LAB</p><p className="text-xs font-medium text-muted-foreground">웹 화학실험실 시뮬레이터</p></div>
           </div>
-          <div className="hidden items-center gap-2 rounded-full border bg-card px-4 py-2 text-xs font-medium text-muted-foreground sm:flex"><span className="size-2 rounded-full bg-emerald-400 shadow-[0_0_0_4px_rgba(52,211,153,.14)]" />안전 모드 활성화</div>
+          <div className="hidden items-center gap-4 sm:flex"><div className="flex items-center gap-2 rounded-full border bg-card px-4 py-2 text-xs font-medium text-muted-foreground"><span className="size-2 rounded-full bg-emerald-400 shadow-[0_0_0_4px_rgba(52,211,153,.14)]" />안전 모드 활성화</div><div className={`flex items-center gap-2 rounded-full border px-4 py-2 text-xs font-semibold ${databaseStatus === 'connected' ? 'border-emerald-200 bg-emerald-50 text-emerald-700' : databaseStatus === 'connecting' ? 'bg-card text-muted-foreground' : 'border-amber-200 bg-amber-50 text-amber-700'}`}><Database className="size-3.5" />{databaseStatus === 'connected' ? 'Supabase 연결됨' : databaseStatus === 'connecting' ? 'DB 연결 확인 중' : '로컬 DB 사용 중'}</div></div>
         </div>
       </header>
 
@@ -37,7 +51,7 @@ export default function Home() {
             <h1 className="text-3xl font-bold tracking-[-0.04em] sm:text-4xl">새로운 반응을 설계해 보세요</h1>
             <p className="mt-3 max-w-xl text-sm leading-6 text-muted-foreground sm:text-base">물질과 실험 조건을 선택한 뒤 중앙 플라스크에서 반응을 관찰할 수 있습니다.</p>
           </div>
-          <div className="flex flex-wrap gap-2"><ReactionLibraryDialog onLoad={setMaterials} /><MaterialDialog catalog added={materials} onAddedChange={setMaterials} /></div>
+          <div className="flex flex-wrap gap-2"><ReactionLibraryDialog onLoad={setMaterials} reactions={availableReactions} materialsData={availableSubstances} /><MaterialDialog catalog added={materials} onAddedChange={setMaterials} substancesData={availableSubstances} /></div>
         </div>
 
         <div className="lab-grid grid gap-5 lg:grid-cols-[minmax(240px,0.8fr)_minmax(380px,1.5fr)_minmax(270px,0.9fr)]">
@@ -46,12 +60,12 @@ export default function Home() {
               <div className="flex items-center justify-between"><div><p className="text-xs font-semibold text-primary">STEP 1</p><CardTitle className="mt-1 text-lg font-bold">물질 넣기</CardTitle></div><span className="rounded-full bg-secondary px-3 py-1 text-xs font-semibold text-secondary-foreground">{materials.length}개 투입</span></div>
             </CardHeader>
             <CardContent className="space-y-4 px-5 py-5">
-              <MaterialDialog compact added={materials} onAddedChange={setMaterials} />
+              <MaterialDialog compact added={materials} onAddedChange={setMaterials} substancesData={availableSubstances} />
               <div className="max-h-[232px] space-y-2 overflow-y-auto pr-1 [scrollbar-color:var(--primary)_transparent] [scrollbar-width:thin]">
                 {materials.map((item) => <div key={item.rowId} className="flex w-full items-center gap-3 rounded-xl bg-muted/55 p-3"><span className={`size-9 shrink-0 rounded-xl ${item.accent} shadow-inner`} /><span className="min-w-0 flex-1"><span className="block truncate text-sm font-semibold">{item.name}</span><span className="block text-xs text-muted-foreground">{item.formula}</span></span><span className="shrink-0 text-xs font-bold text-[#275b56]">{item.amount} {item.unit}</span></div>)}
                 {!materials.length && <div className="rounded-xl border border-dashed p-5 text-center text-sm text-muted-foreground">투입된 물질이 없습니다.</div>}
               </div>
-              <MaterialDialog added={materials} onAddedChange={setMaterials} />
+              <MaterialDialog added={materials} onAddedChange={setMaterials} substancesData={availableSubstances} />
             </CardContent>
           </Card>
 
@@ -78,12 +92,12 @@ export default function Home() {
           <div className="flex flex-col gap-5">
             <Card className="border-0 bg-card/95 py-0 shadow-[0_18px_60px_rgba(23,62,55,.08)] ring-1 ring-border">
               <CardHeader className="border-b px-5 py-5"><p className="text-xs font-semibold text-primary">STEP 2</p><CardTitle className="mt-1 text-lg font-bold">실험 조건</CardTitle></CardHeader>
-              <CardContent className="space-y-3 px-5 py-5"><ReactionDialog trigger="temperature" materials={materials} conditions={conditions} onConditionsChange={setConditions} /><ReactionDialog trigger="pressure" materials={materials} conditions={conditions} onConditionsChange={setConditions} /><ReactionDialog trigger="ph" materials={materials} conditions={conditions} onConditionsChange={setConditions} /><ReactionDialog trigger="time" materials={materials} conditions={conditions} onConditionsChange={setConditions} /></CardContent>
+              <CardContent className="space-y-3 px-5 py-5"><ReactionDialog trigger="temperature" materials={materials} conditions={conditions} onConditionsChange={setConditions} reactionDefinitions={availableReactions} /><ReactionDialog trigger="pressure" materials={materials} conditions={conditions} onConditionsChange={setConditions} reactionDefinitions={availableReactions} /><ReactionDialog trigger="ph" materials={materials} conditions={conditions} onConditionsChange={setConditions} reactionDefinitions={availableReactions} /><ReactionDialog trigger="time" materials={materials} conditions={conditions} onConditionsChange={setConditions} reactionDefinitions={availableReactions} /></CardContent>
             </Card>
             <Card className="flex-1 border-0 bg-[#173f3a] py-0 text-white shadow-[0_18px_60px_rgba(23,62,55,.18)] ring-0">
               <CardContent className="flex h-full min-h-48 flex-col justify-between px-5 py-5">
                 <div><p className="text-xs font-semibold text-emerald-300">STEP 3</p><h2 className="mt-2 text-xl font-bold">{materials.length ? '실험 준비 완료' : '물질을 먼저 넣어 주세요'}</h2><p className="mt-2 text-sm leading-6 text-white/65">입력한 물질과 조건으로 기본 반응을 판정하고 생성량을 계산합니다.</p></div>
-                <ReactionDialog trigger="start" materials={materials} conditions={conditions} onConditionsChange={setConditions} onReactionComplete={setReactionResult} />
+                <ReactionDialog trigger="start" materials={materials} conditions={conditions} onConditionsChange={setConditions} onReactionComplete={setReactionResult} reactionDefinitions={availableReactions} />
               </CardContent>
             </Card>
           </div>

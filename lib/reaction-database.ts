@@ -21,7 +21,7 @@ export type ReactionDefinition = {
   maxPh?: number;
   note: string;
   category?: '중화' | '침전' | '기체 발생' | '산화·환원' | '분해' | '용해';
-  source?: '교육용 선별 DB' | 'ORD 선별';
+  source?: '교육용 선별 DB' | 'ORD 선별' | 'Supabase DB';
   keywords?: string[];
 };
 

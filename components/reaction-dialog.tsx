@@ -46,7 +46,7 @@ function conditionWarning(reaction: ReactionDefinition, materials: AddedSubstanc
   return null;
 }
 
-export function analyzeReaction(materials: AddedSubstance[], conditions: LabConditions): ReactionResult {
+export function analyzeReaction(materials: AddedSubstance[], conditions: LabConditions, reactionDefinitions: ReactionDefinition[] = reactionDatabase): ReactionResult {
   if (conditions.temperature < -273.15 || conditions.pressure <= 0 || conditions.ph < 0 || conditions.ph > 14 || conditions.time < 0) {
     return { kind: 'warning', effect: 'none', title: '조건을 확인해 주세요', observation: '온도, 압력, pH 또는 반응 시간의 입력 범위를 벗어났습니다.', ...emptyResultLists };
   }
@@ -61,7 +61,7 @@ export function analyzeReaction(materials: AddedSubstance[], conditions: LabCond
     return values.some((value) => value === null) ? null : values.reduce<number>((sum, value) => sum + (value ?? 0), 0);
   };
 
-  const reaction = reactionDatabase.find((candidate) => candidate.reactants.every((reactant) => grouped.has(reactant.id)));
+  const reaction = reactionDefinitions.find((candidate) => candidate.reactants.every((reactant) => grouped.has(reactant.id)));
   if (!reaction) return { kind: 'none', effect: 'none', title: '등록된 반응 없음', observation: '현재 투입된 물질 조합과 일치하는 반응을 찾지 못했습니다. PubChem 물질 검색 결과도 반응 DB에 반응식이 등록되어 있어야 판정할 수 있습니다.', note: '반응 DB는 일반 실험 반응부터 단계적으로 확장 중입니다.', products: [], remainingReactants: materials.map(originalAmount) };
 
   const warning = conditionWarning(reaction, materials, conditions);
@@ -96,9 +96,9 @@ export function analyzeReaction(materials: AddedSubstance[], conditions: LabCond
 
 }
 
-export function ReactionDialog({ materials, conditions, onConditionsChange, onReactionComplete, trigger }: { materials: AddedSubstance[]; conditions: LabConditions; onConditionsChange: (conditions: LabConditions) => void; onReactionComplete?: (result: ReactionResult) => void; trigger: 'temperature' | 'pressure' | 'ph' | 'time' | 'start' }) {
+export function ReactionDialog({ materials, conditions, onConditionsChange, onReactionComplete, trigger, reactionDefinitions = reactionDatabase }: { materials: AddedSubstance[]; conditions: LabConditions; onConditionsChange: (conditions: LabConditions) => void; onReactionComplete?: (result: ReactionResult) => void; trigger: 'temperature' | 'pressure' | 'ph' | 'time' | 'start'; reactionDefinitions?: ReactionDefinition[] }) {
   const [hasRun, setHasRun] = useState(false);
-  const result = useMemo(() => analyzeReaction(materials, conditions), [materials, conditions]);
+  const result = useMemo(() => analyzeReaction(materials, conditions, reactionDefinitions), [materials, conditions, reactionDefinitions]);
   const triggerMap: Record<Exclude<typeof trigger, 'start'>, { icon: ReactNode; label: string; value: string }> = {
     temperature: { icon: <Thermometer />, label: '온도', value: `${conditions.temperature} °C` },
     pressure: { icon: <Gauge />, label: '압력', value: `${conditions.pressure} atm` },
