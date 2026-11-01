@@ -7,6 +7,7 @@ import { Input } from '@/components/ui/input';
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 import { canonicalSubstanceId, substances, type AddedSubstance, type LabConditions, toMoles } from '@/lib/chemistry';
 import { reactionDatabase, type ReactionDefinition } from '@/lib/reaction-database';
+import { inferRuleReaction } from '@/lib/reaction-rules';
 
 export type ReactionResult = {
   kind: 'reaction' | 'none' | 'warning';
@@ -41,6 +42,9 @@ function originalAmount(material: AddedSubstance): ResultSpecies {
 }
 
 function conditionWarning(reaction: ReactionDefinition, materials: AddedSubstance[], conditions: LabConditions): ReactionResult | null {
+  if (reaction.minTemperature !== undefined && conditions.temperature < reaction.minTemperature) return { kind: 'warning', effect: 'none', title: '반응 조건이 충분하지 않음', equation: reaction.equation, observation: `현재 온도 ${conditions.temperature} °C에서는 ${reaction.title}에 필요한 최소 ${reaction.minTemperature} °C에 도달하지 않았습니다.`, note: reaction.note, products: [], remainingReactants: materials.map(originalAmount) };
+  if (reaction.maxTemperature !== undefined && conditions.temperature > reaction.maxTemperature) return { kind: 'warning', effect: 'none', title: '반응 조건을 확인해 주세요', equation: reaction.equation, observation: `현재 온도 ${conditions.temperature} °C가 ${reaction.title}의 적용 범위를 벗어납니다.`, note: reaction.note, products: [], remainingReactants: materials.map(originalAmount) };
+  if (reaction.minTime !== undefined && conditions.time < reaction.minTime) return { kind: 'warning', effect: 'none', title: '반응 시간이 충분하지 않음', equation: reaction.equation, observation: `현재 반응 시간 ${conditions.time}분은 필요한 최소 ${reaction.minTime}분보다 짧습니다.`, note: reaction.note, products: [], remainingReactants: materials.map(originalAmount) };
   if (reaction.minPh !== undefined && conditions.ph < reaction.minPh) return { kind: 'warning', effect: 'none', title: '반응 조건이 충분하지 않음', equation: reaction.equation, observation: `현재 pH ${conditions.ph}에서는 ${reaction.title}의 최소 pH ${reaction.minPh} 조건을 충족하지 않습니다.`, note: reaction.note, products: [], remainingReactants: materials.map(originalAmount) };
   if (reaction.maxPh !== undefined && conditions.ph > reaction.maxPh) return { kind: 'warning', effect: 'none', title: '반응 조건이 충분하지 않음', equation: reaction.equation, observation: `현재 pH ${conditions.ph}에서는 ${reaction.title}의 최대 pH ${reaction.maxPh} 조건을 벗어납니다.`, note: reaction.note, products: [], remainingReactants: materials.map(originalAmount) };
   return null;
@@ -61,8 +65,9 @@ export function analyzeReaction(materials: AddedSubstance[], conditions: LabCond
     return values.some((value) => value === null) ? null : values.reduce<number>((sum, value) => sum + (value ?? 0), 0);
   };
 
-  const reaction = reactionDefinitions.find((candidate) => candidate.reactants.every((reactant) => grouped.has(reactant.id)));
-  if (!reaction) return { kind: 'none', effect: 'none', title: '등록된 반응 없음', observation: '현재 투입된 물질 조합과 일치하는 반응을 찾지 못했습니다. PubChem 물질 검색 결과도 반응 DB에 반응식이 등록되어 있어야 판정할 수 있습니다.', note: '반응 DB는 일반 실험 반응부터 단계적으로 확장 중입니다.', products: [], remainingReactants: materials.map(originalAmount) };
+  const databaseReaction = reactionDefinitions.find((candidate) => candidate.reactants.every((reactant) => grouped.has(reactant.id)));
+  const reaction = databaseReaction ?? inferRuleReaction(materials);
+  if (!reaction) return { kind: 'none', effect: 'none', title: '확인된 반응 없음', observation: '반응 DB와 중화·침전·기체 발생·치환·연소·분해 규칙을 모두 확인했지만 안전하게 판정할 수 없는 조합입니다.', note: '불확실한 조합은 임의의 생성물을 만들지 않습니다. 필요한 반응은 검증 후 반응 DB에 추가할 수 있습니다.', products: [], remainingReactants: materials.map(originalAmount) };
 
   const warning = conditionWarning(reaction, materials, conditions);
   if (warning) return warning;
@@ -113,7 +118,7 @@ export function ReactionDialog({ materials, conditions, onConditionsChange, onRe
       {trigger === 'start' ? (
         <DialogTrigger render={<Button className="mt-6 h-14 w-full rounded-xl bg-[#50d8c5] text-base font-bold text-[#123e39] shadow-[0_12px_30px_rgba(80,216,197,.2)] hover:bg-[#6ee5d4]" />}><Play data-icon="inline-start" /> 반응 시작</DialogTrigger>
       ) : (
-        <DialogTrigger render={<button type="button" className="flex w-full items-center gap-3 rounded-xl border bg-background p-3 text-left transition-colors hover:border-primary/35" />}>
+        <DialogTrigger render={<button type="button" aria-label={`${triggerMap[trigger].label} 설정`} className="flex w-full items-center gap-3 rounded-xl border bg-background p-3 text-left transition-colors hover:border-primary/35" />}>
           <span className="grid size-9 place-items-center rounded-lg bg-primary/10 text-primary [&_svg]:size-4">{triggerMap[trigger].icon}</span><span className="flex-1 text-sm font-semibold">{triggerMap[trigger].label}</span><span className="text-sm font-bold text-[#275b56]">{triggerMap[trigger].value}</span>
         </DialogTrigger>
       )}
@@ -146,7 +151,7 @@ export function ReactionDialog({ materials, conditions, onConditionsChange, onRe
           ) : <div className="mt-4 rounded-2xl border border-dashed py-8 text-center text-sm text-muted-foreground">조건을 확인한 뒤 아래 버튼을 눌러 반응을 판정하세요.</div>}
 
           <Button onClick={() => { setHasRun(true); if (trigger === 'start') onReactionComplete?.(result); }} disabled={!materials.length} className="mt-4 h-13 w-full rounded-xl text-base font-bold"><Play data-icon="inline-start" /> 판정 및 계산 실행</Button>
-          <p className="mt-3 text-center text-xs leading-5 text-muted-foreground">현재 결과는 등록된 기본 규칙과 이상적인 화학량론을 이용한 교육용 예상값이며 실제 실험 결과를 보장하지 않습니다.</p>
+          <p className="mt-3 text-center text-xs leading-5 text-muted-foreground">반응 DB를 우선 적용하고, 일치 항목이 없으면 검증된 기본 화학 규칙으로 판정합니다. 결과는 이상적 화학량론을 사용한 교육용 예상입니다.</p>
         </div>
       </DialogContent>
     </Dialog>
