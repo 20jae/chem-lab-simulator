@@ -6,11 +6,14 @@ type MaterialRow = {
   slug: string;
   name_ko: string;
   formula: string;
-  state: 'solid' | 'liquid' | 'gas' | 'aqueous';
+  state: 'solid' | 'liquid' | 'gas' | 'aqueous' | 'unknown';
   molar_mass_g_mol: number;
   density_g_ml: number | null;
   description: string | null;
   accent_class: string | null;
+  source: string | null;
+  pubchem_cid: number | null;
+  source_url: string | null;
 };
 
 type CatalogSpecies = {
@@ -35,7 +38,7 @@ type ReactionRow = {
   species: CatalogSpecies[];
 };
 
-const stateLabels = { solid: '고체', liquid: '액체', gas: '기체', aqueous: '수용액' } as const;
+const stateLabels = { solid: '고체', liquid: '액체', gas: '기체', aqueous: '수용액', unknown: '상태 미확인' } as const;
 const categoryLabels: Record<string, ReactionDefinition['category']> = {
   neutralization: '중화', precipitation: '침전', dissolution: '용해', other: '산화·환원',
 };
@@ -47,7 +50,7 @@ export async function GET() {
 
   const headers = { apikey: anonKey, Authorization: `Bearer ${anonKey}` };
   const [materialsResponse, reactionsResponse] = await Promise.all([
-    fetch(`${url}/rest/v1/materials?select=slug,name_ko,formula,state,molar_mass_g_mol,density_g_ml,description,accent_class&is_active=eq.true&order=name_ko`, { headers, cache: 'no-store' }),
+    fetch(`${url}/rest/v1/materials?select=slug,name_ko,formula,state,molar_mass_g_mol,density_g_ml,description,accent_class,source,pubchem_cid,source_url&is_active=eq.true&order=name_ko`, { headers, cache: 'no-store' }),
     fetch(`${url}/rest/v1/reaction_catalog?select=*&order=slug`, { headers, cache: 'no-store' }),
   ]);
   if (!materialsResponse.ok || !reactionsResponse.ok) {
@@ -60,12 +63,14 @@ export async function GET() {
     id: row.slug,
     name: row.name_ko,
     formula: row.formula,
-    state: stateLabels[row.state],
+    state: stateLabels[row.state] ?? '상태 미확인',
     molarMass: Number(row.molar_mass_g_mol),
     density: row.density_g_ml === null ? undefined : Number(row.density_g_ml),
     description: row.description ?? 'Supabase 물질 데이터베이스에서 불러온 물질',
     accent: row.accent_class ?? 'bg-teal-400',
-    source: 'supabase',
+    source: row.source?.startsWith('PubChem') ? 'pubchem' : 'supabase',
+    pubchemCid: row.pubchem_cid === null ? undefined : Number(row.pubchem_cid),
+    sourceUrl: row.source_url ?? undefined,
   }));
   const materialMap = new Map(materials.map((material) => [material.id, material]));
   const reactions: ReactionDefinition[] = reactionRows.map((row) => {

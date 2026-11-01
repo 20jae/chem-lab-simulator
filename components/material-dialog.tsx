@@ -15,6 +15,7 @@ export function MaterialDialog({ compact = false, catalog = false, added, onAdde
   const [unit, setUnit] = useState('g');
   const [remoteResults, setRemoteResults] = useState<Substance[]>([]);
   const [isSearching, setIsSearching] = useState(false);
+  const [cacheStatus, setCacheStatus] = useState<'idle' | 'saving' | 'saved' | 'error'>('idle');
   const localResults = useMemo(() => {
     const term = query.trim().toLowerCase();
     return term ? substancesData.filter((item) => `${item.name} ${item.formula}`.toLowerCase().includes(term)) : substancesData;
@@ -27,6 +28,8 @@ export function MaterialDialog({ compact = false, catalog = false, added, onAdde
     if (!allowedUnits.includes(unit)) setUnit(allowedUnits[0]);
   }, [allowedUnits, unit]);
 
+  useEffect(() => setCacheStatus('idle'), [selected.id]);
+
   useEffect(() => {
     const controller = new AbortController();
     const term = query.trim();
@@ -38,8 +41,21 @@ export function MaterialDialog({ compact = false, catalog = false, added, onAdde
     return () => { window.clearTimeout(timer); controller.abort(); };
   }, [query]);
 
-  const addSubstance = () => {
+  const addSubstance = async () => {
     if (!amount || Number(amount) <= 0) return;
+    if (selected.source === 'pubchem' && selected.pubchemCid) {
+      setCacheStatus('saving');
+      try {
+        const response = await fetch('/api/pubchem/cache', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ cid: selected.pubchemCid }),
+        });
+        setCacheStatus(response.ok ? 'saved' : 'error');
+      } catch {
+        setCacheStatus('error');
+      }
+    }
     onAddedChange([...added, { ...selected, amount, unit, rowId: Date.now() }]);
   };
 
@@ -86,7 +102,8 @@ export function MaterialDialog({ compact = false, catalog = false, added, onAdde
               </div>
               <label htmlFor={`amount-${compact}`} className="mt-5 block text-sm font-semibold">투입량과 단위</label>
               <div className="mt-2 grid grid-cols-[1fr_110px] gap-2"><Input id={`amount-${compact}`} type="number" min="0" step="any" value={amount} onChange={(event) => setAmount(event.target.value)} className="h-12 rounded-xl bg-white px-4 text-base font-semibold" /><Select value={unit} onValueChange={(value) => value && setUnit(value)}><SelectTrigger className="h-12 w-full rounded-xl bg-white px-4 text-base"><SelectValue /></SelectTrigger><SelectContent>{allowedUnits.map((availableUnit) => <SelectItem key={availableUnit} value={availableUnit}>{availableUnit}</SelectItem>)}</SelectContent></Select></div>
-              <Button onClick={addSubstance} disabled={!amount || Number(amount) <= 0} className="mt-4 h-12 w-full rounded-xl text-base font-bold"><Plus data-icon="inline-start" /> 현재 실험에 넣기</Button>
+              <Button onClick={addSubstance} disabled={!amount || Number(amount) <= 0 || cacheStatus === 'saving'} className="mt-4 h-12 w-full rounded-xl text-base font-bold">{cacheStatus === 'saving' ? <LoaderCircle data-icon="inline-start" className="animate-spin" /> : <Plus data-icon="inline-start" />} {cacheStatus === 'saving' ? 'PubChem 검증 및 저장 중' : '현재 실험에 넣기'}</Button>
+              {selected.source === 'pubchem' && cacheStatus !== 'idle' && <p className={`mt-2 text-center text-xs font-semibold ${cacheStatus === 'error' ? 'text-amber-700' : 'text-emerald-700'}`}>{cacheStatus === 'saved' ? 'PubChem 공식 정보가 Supabase에 저장되었습니다.' : cacheStatus === 'error' ? '실험에는 추가했지만 DB 저장에 실패했습니다.' : 'PubChem CID를 공식 API에서 다시 확인하고 있습니다.'}</p>}
             </section>
           </div>
 
