@@ -13,6 +13,7 @@ import { loadCatalog } from '@/lib/catalog-data';
 import { getReactionVisual } from '@/lib/reaction-visuals';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
 import { LabApparatus } from '@/components/lab-apparatus';
+import { ExperimentHistoryDialog } from '@/components/experiment-history-dialog';
 
 type Apparatus = 'flask' | 'beaker' | 'test-tube';
 const apparatusLabels: Record<Apparatus, string> = { flask: '삼각 플라스크', beaker: '비커', 'test-tube': '시험관' };
@@ -62,7 +63,7 @@ export default function Home() {
             <h1 className="text-3xl font-bold tracking-[-0.04em] sm:text-4xl">새로운 반응을 설계해 보세요</h1>
             <p className="mt-3 max-w-xl text-sm leading-6 text-muted-foreground sm:text-base">물질과 실험 조건을 선택한 뒤 중앙 플라스크에서 반응을 관찰할 수 있습니다.</p>
           </div>
-          <div className="flex flex-wrap gap-2"><ReactionLibraryDialog onLoad={updateMaterials} reactions={availableReactions} materialsData={availableSubstances} /><MaterialCatalogDialog substancesData={availableSubstances} /></div>
+          <div className="flex flex-wrap gap-2"><ExperimentHistoryDialog materials={materials} conditions={conditions} result={reactionResult} apparatus={apparatusLabels[apparatus]} /><ReactionLibraryDialog onLoad={updateMaterials} reactions={availableReactions} materialsData={availableSubstances} /><MaterialCatalogDialog substancesData={availableSubstances} /></div>
         </div>
 
         <div className="lab-grid grid gap-5 lg:grid-cols-[minmax(240px,0.8fr)_minmax(380px,1.5fr)_minmax(270px,0.9fr)]">
