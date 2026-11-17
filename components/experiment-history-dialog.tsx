@@ -20,7 +20,6 @@ type ExperimentRecord = {
   title: string;
   result_equation: string | null;
   observation: string | null;
-  calculation_summary: string | null;
   result_snapshot: ExperimentSnapshot;
   created_at: string;
 };
@@ -42,7 +41,7 @@ export function ExperimentHistoryDialog({ materials, conditions, result, apparat
     if (clearMessage) setMessage('');
     try {
       const client = await ensureAnonymousSession();
-      const { data, error } = await client.from('experiments').select('id,title,result_equation,observation,calculation_summary,result_snapshot,created_at').order('created_at', { ascending: false }).limit(30);
+      const { data, error } = await client.from('experiments').select('id,title,result_equation,observation,result_snapshot,created_at').order('created_at', { ascending: false }).limit(30);
       if (error) throw error;
       setRecords((data ?? []) as ExperimentRecord[]);
     } catch (error) {
@@ -58,23 +57,15 @@ export function ExperimentHistoryDialog({ materials, conditions, result, apparat
     setMessage('');
     try {
       const client = await ensureAnonymousSession();
-      const now = new Date().toISOString();
       const { error } = await client.from('experiments').insert({
         title: result.title.slice(0, 100),
-        status: 'completed',
         temperature_c: conditions.temperature,
         pressure_atm: conditions.pressure,
         ph: conditions.ph,
         reaction_time_min: conditions.time,
-        result_kind: result.kind,
-        result_title: result.title,
         result_equation: result.equation ?? null,
         observation: result.observation,
-        limiting_reactant: result.limitingReactant ?? null,
-        calculation_summary: result.calculation ?? null,
         result_snapshot: { materials, conditions, apparatus, result },
-        started_at: now,
-        completed_at: now,
       });
       if (error) throw error;
       setMessage('현재 실험 결과를 Supabase에 저장했습니다.');
@@ -99,7 +90,7 @@ export function ExperimentHistoryDialog({ materials, conditions, result, apparat
         <div className="mt-5 flex items-center justify-between"><h2 className="text-lg font-bold">최근 기록</h2><span className="rounded-full bg-muted px-3 py-1 text-xs font-semibold">{records.length}개</span></div>
         {loading ? <div className="grid min-h-48 place-items-center"><LoaderCircle className="size-7 animate-spin text-primary" /></div> : records.length ? <div className="mt-3 space-y-3">{records.map((record) => {
           const snapshot = record.result_snapshot ?? {};
-          return <article key={record.id} className="rounded-2xl border bg-white p-4"><div className="flex items-start gap-3"><span className="grid size-10 shrink-0 place-items-center rounded-xl bg-primary/10 text-primary"><FlaskConical className="size-5" /></span><div className="min-w-0 flex-1"><div className="flex flex-wrap items-center justify-between gap-2"><h3 className="font-bold">{record.title}</h3><time className="text-xs text-muted-foreground">{new Date(record.created_at).toLocaleString('ko-KR')}</time></div>{record.result_equation && <p className="mt-2 overflow-x-auto rounded-lg bg-muted/55 px-3 py-2 font-mono text-sm font-semibold">{record.result_equation}</p>}<p className="mt-2 text-sm leading-6 text-muted-foreground">{record.observation}</p><div className="mt-3 flex flex-wrap gap-2 text-xs font-semibold"><span className="rounded-full bg-secondary px-2.5 py-1">{snapshot.materials?.map((item) => item.formula).join(' + ') || '물질 정보 없음'}</span>{snapshot.conditions && <span className="rounded-full bg-muted px-2.5 py-1">{snapshot.conditions.temperature} °C · {snapshot.conditions.pressure} atm · pH {snapshot.conditions.ph}</span>}</div>{record.calculation_summary && <p className="mt-3 whitespace-pre-line rounded-lg border px-3 py-2 text-xs leading-5 text-[#275b56]">{record.calculation_summary}</p>}</div></div></article>;
+          return <article key={record.id} className="rounded-2xl border bg-white p-4"><div className="flex items-start gap-3"><span className="grid size-10 shrink-0 place-items-center rounded-xl bg-primary/10 text-primary"><FlaskConical className="size-5" /></span><div className="min-w-0 flex-1"><div className="flex flex-wrap items-center justify-between gap-2"><h3 className="font-bold">{record.title}</h3><time className="text-xs text-muted-foreground">{new Date(record.created_at).toLocaleString('ko-KR')}</time></div>{record.result_equation && <p className="mt-2 overflow-x-auto rounded-lg bg-muted/55 px-3 py-2 font-mono text-sm font-semibold">{record.result_equation}</p>}<p className="mt-2 text-sm leading-6 text-muted-foreground">{record.observation}</p><div className="mt-3 flex flex-wrap gap-2 text-xs font-semibold"><span className="rounded-full bg-secondary px-2.5 py-1">{snapshot.materials?.map((item) => item.formula).join(' + ') || '물질 정보 없음'}</span>{snapshot.conditions && <span className="rounded-full bg-muted px-2.5 py-1">{snapshot.conditions.temperature} °C · {snapshot.conditions.pressure} atm · pH {snapshot.conditions.ph}</span>}</div>{snapshot.result?.calculation && <p className="mt-3 whitespace-pre-line rounded-lg border px-3 py-2 text-xs leading-5 text-[#275b56]">{snapshot.result.calculation}</p>}</div></div></article>;
         })}</div> : <div className="mt-3 rounded-2xl border border-dashed py-12 text-center"><CalendarClock className="mx-auto size-8 text-muted-foreground" /><p className="mt-3 font-semibold">저장된 실험 기록이 없습니다.</p><p className="mt-1 text-sm text-muted-foreground">반응을 실행한 뒤 현재 실험을 저장해 보세요.</p></div>}
       </div>
     </DialogContent>
