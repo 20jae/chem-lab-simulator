@@ -37,6 +37,25 @@ function formatMoles(value: number) {
   return `${value.toFixed(4)} mol`;
 }
 
+function formatConcentration(value: number) {
+  if (value < 0.001) return `${value.toExponential(3)} mol/L`;
+  return `${value.toFixed(4)} mol/L`;
+}
+
+function solventVolumeLiters(materials: AddedSubstance[]) {
+  const water = materials.filter((material) => canonicalSubstanceId(material) === 'h2o');
+  if (!water.length) return null;
+  const volumes = water.map((material) => {
+    const amount = Number(material.amount);
+    if (!Number.isFinite(amount) || amount <= 0) return null;
+    if (material.unit === 'mL') return amount / 1000;
+    if (material.unit === 'g' && material.density) return amount / material.density / 1000;
+    if (material.unit === 'mg' && material.density) return amount / 1000 / material.density / 1000;
+    return null;
+  });
+  return volumes.some((volume) => volume === null) ? null : volumes.reduce<number>((sum, volume) => sum + (volume ?? 0), 0);
+}
+
 function originalAmount(material: AddedSubstance): ResultSpecies {
   return { name: material.name, formula: material.formula, amount: `${material.amount} ${material.unit}`, role: '미반응 물질' };
 }
@@ -72,7 +91,18 @@ export function analyzeReaction(materials: AddedSubstance[], conditions: LabCond
   const warning = conditionWarning(reaction, materials, conditions);
   if (warning) return warning;
 
-  if (reaction.effect === 'dissolution') return { kind: 'none', effect: 'dissolution', title: reaction.title, equation: reaction.equation, observation: reaction.observation, note: reaction.note, products: reaction.products.map((product) => ({ name: product.name, formula: product.formula, amount: '수용액 내 분산', role: product.role ?? '용해 이온' })), remainingReactants: materials.filter((item) => item.id === 'h2o').map((item) => ({ ...originalAmount(item), role: '용매' })) };
+  if (reaction.effect === 'dissolution') {
+    const solute = reaction.reactants.find((reactant) => reactant.id !== 'h2o');
+    const soluteMaterial = solute ? grouped.get(solute.id)?.[0] : undefined;
+    const soluteMoles = solute ? moles(solute.id) : null;
+    const solutionVolume = solventVolumeLiters(materials);
+    const calculation = soluteMaterial && soluteMoles !== null
+      ? solutionVolume !== null && solutionVolume > 0
+        ? `${soluteMaterial.formula} 몰수: ${formatMoles(soluteMoles)}\n추정 용액 부피: ${solutionVolume.toFixed(4)} L (투입한 물의 부피를 최종 용액 부피로 가정)\n몰농도: ${formatConcentration(soluteMoles / solutionVolume)}`
+        : `${soluteMaterial.formula} 몰수: ${formatMoles(soluteMoles)}\n물의 부피 정보가 없어 몰농도는 계산하지 못했습니다.`
+      : '용질의 투입량을 몰로 환산할 수 없어 몰수와 몰농도를 계산하지 못했습니다.';
+    return { kind: 'none', effect: 'dissolution', title: reaction.title, equation: reaction.equation, observation: reaction.observation, calculation, note: reaction.note, products: reaction.products.map((product) => ({ name: product.name, formula: product.formula, amount: '수용액 내 분산', role: product.role ?? '용해 이온' })), remainingReactants: materials.filter((item) => canonicalSubstanceId(item) === 'h2o').map((item) => ({ ...originalAmount(item), role: '용매' })) };
+  }
 
   const extents = reaction.reactants.map((reactant) => {
     const value = moles(reactant.id);
@@ -169,7 +199,7 @@ function ResultView({ result }: { result: ReactionResult }) {
     </div>
     <div className="grid gap-3 sm:grid-cols-2">
       <div className="rounded-xl border bg-white p-4"><p className="text-xs font-semibold text-muted-foreground">한계 반응물</p><p className="mt-1 font-bold text-[#275b56]">{result.limitingReactant ?? '해당 없음'}</p></div>
-      <div className="rounded-xl border bg-white p-4"><p className="text-xs font-semibold text-muted-foreground">이론 계산</p><p className="mt-1 text-sm font-semibold leading-6 text-[#275b56]">{result.calculation ?? '추가 계산 결과가 없습니다.'}</p></div>
+      <div className="rounded-xl border bg-white p-4"><p className="text-xs font-semibold text-muted-foreground">이론 계산</p><p className="mt-1 whitespace-pre-line text-sm font-semibold leading-6 text-[#275b56]">{result.calculation ?? '추가 계산 결과가 없습니다.'}</p></div>
     </div>
     {result.note && <p className="rounded-xl bg-muted/55 px-4 py-3 text-sm leading-6 text-muted-foreground">※ {result.note}</p>}
   </section>;
