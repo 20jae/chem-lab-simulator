@@ -37,22 +37,22 @@ button { cursor: pointer; }
   50% { opacity: .9; transform: scale(1.25); }
 }
 
-.reaction-bubble {
-  position: absolute;
+.apparatus-bubble {
   border: 1px solid rgba(14, 116, 144, .35);
-  border-radius: 999px;
-  background: rgba(255, 255, 255, .65);
+  fill: rgba(255, 255, 255, .65);
+  stroke: rgba(14, 116, 144, .35);
+  stroke-width: 1px;
+  transform-box: fill-box;
+  transform-origin: center;
   animation: reaction-rise 2.2s ease-in infinite;
 }
 
 .reaction-warm-glow { animation: reaction-pulse 2.4s ease-in-out infinite; }
 
-.reaction-dissolve {
-  position: absolute;
-  width: .55rem;
-  height: .55rem;
-  border-radius: 999px;
-  background: rgba(14, 165, 233, .65);
+.apparatus-dissolve {
+  fill: rgba(14, 165, 233, .65);
+  transform-box: fill-box;
+  transform-origin: center;
   animation: reaction-dissolve 1.8s ease-in-out infinite;
 }
 @media (max-width: 1023px) { .lab-grid > :nth-child(2) { order: -1; } }
