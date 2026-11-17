@@ -25,7 +25,8 @@ export default function Home() {
   const [availableReactions, setAvailableReactions] = useState(reactionDatabase);
   const [databaseStatus, setDatabaseStatus] = useState<'connecting' | 'connected' | 'fallback'>('connecting');
   const [apparatus, setApparatus] = useState<Apparatus>('flask');
-  const totalVolume = materials.filter((item) => item.unit === 'mL').reduce((sum, item) => sum + Number(item.amount || 0), 0);
+  const totalVolumeMl = materials.reduce((sum, item) => sum + (item.unit === 'mL' ? Number(item.amount || 0) : item.unit === 'L' ? Number(item.amount || 0) * 1000 : 0), 0);
+  const totalVolumeLabel = totalVolumeMl >= 1000 ? `${Number((totalVolumeMl / 1000).toFixed(3))} L` : `${Number(totalVolumeMl.toFixed(2))} mL`;
 
   useEffect(() => {
     const controller = new AbortController();
@@ -93,7 +94,7 @@ export default function Home() {
                 {reactionVisual.precipitate && <div aria-hidden="true" className="absolute bottom-[21%] left-1/2 z-20 flex w-28 -translate-x-1/2 flex-wrap items-end justify-center gap-1">{[3,2,4,2.5,3,2,3.5,2.5,2].map((size, index) => <span key={index} className="rounded-full shadow-sm" style={{ width: `${size * 4}px`, height: `${size * 4}px`, backgroundColor: reactionVisual.precipitate, opacity: .72 + (index % 3) * .1 }} />)}</div>}
                 {reactionVisual.deposit && <div aria-hidden="true" className="absolute bottom-[25%] left-1/2 z-20 h-5 w-24 -translate-x-1/2 rounded-[50%] opacity-90" style={{ background: `linear-gradient(90deg, transparent, ${reactionVisual.deposit}, transparent)` }} />}
                 {reactionResult?.effect === 'dissolution' && <div aria-hidden="true" className="absolute inset-0"><span className="reaction-dissolve left-[38%] top-[45%]" /><span className="reaction-dissolve left-[57%] top-[56%] [animation-delay:.7s]" /><span className="reaction-dissolve left-[48%] top-[65%] [animation-delay:1.2s]" /></div>}
-                <div className="absolute bottom-3 z-30 rounded-full border border-primary/15 bg-white/95 px-3.5 py-1.5 text-xs font-semibold text-[#147a78] shadow-sm sm:bottom-4">{totalVolume > 0 ? `액체 ${totalVolume} mL` : `${materials.length}개 물질`}</div>
+                <div className="absolute bottom-3 z-30 rounded-full border border-primary/15 bg-white/95 px-3.5 py-1.5 text-xs font-semibold text-[#147a78] shadow-sm sm:bottom-4">{totalVolumeMl > 0 ? `부피 ${totalVolumeLabel}` : `${materials.length}개 물질`}</div>
               </div>
               <div className="mt-5 flex flex-wrap justify-center gap-2">{materials.map((item) => <span key={item.rowId} className="rounded-full border bg-white/80 px-3 py-1.5 text-xs font-semibold text-muted-foreground shadow-sm">{item.formula}</span>)}</div>
               {reactionResult && <div className={`mt-4 w-full max-w-md rounded-xl border px-4 py-3 text-center ${reactionResult.kind === 'reaction' ? 'border-primary/25 bg-white/85' : 'bg-white/65'}`} aria-live="polite"><p className="text-sm font-bold text-[#275b56]">{reactionResult.title}</p><div className="mt-2 flex items-center justify-center gap-2 text-xs font-semibold"><span className="rounded-full bg-slate-100 px-2.5 py-1">{reactionVisual.initial}</span><span className="text-primary">→</span><span className="rounded-full bg-primary/10 px-2.5 py-1 text-primary">{reactionVisual.final}</span></div>{(reactionVisual.precipitateLabel || reactionVisual.depositLabel) && <p className="mt-2 text-xs font-bold text-[#7c5b35]">관찰: {reactionVisual.precipitateLabel ?? reactionVisual.depositLabel}</p>}<p className="mt-2 text-xs leading-5 text-muted-foreground">{reactionResult.observation}</p></div>}

@@ -22,11 +22,11 @@ export function MaterialDialog({ compact = false, catalog = false, added, onAdde
   }, [query, substancesData]);
   const filtered = useMemo(() => [...localResults, ...remoteResults.filter((remote) => !localResults.some((local) => local.pubchemCid === remote.pubchemCid))], [localResults, remoteResults]);
   const selected = filtered.find((item) => item.id === selectedId) ?? substancesData.find((item) => item.id === selectedId) ?? filtered[0] ?? substancesData[0];
-  const allowedUnits = selected.state === '기체' ? ['mol'] : selected.state === '액체' || selected.state === '수용액' ? ['g', 'mg', 'mL', 'mol'] : ['g', 'mg', 'mol'];
+  const allowedUnits = selected.state === '기체' ? ['L', 'mL', 'mol'] : selected.state === '액체' || selected.state === '수용액' ? ['mL', 'L', 'g', 'mg', 'mol'] : ['g', 'mg', 'mol'];
 
   useEffect(() => {
-    if (!allowedUnits.includes(unit)) setUnit(allowedUnits[0]);
-  }, [allowedUnits, unit]);
+    setUnit(selected.state === '기체' ? 'L' : selected.state === '액체' || selected.state === '수용액' ? 'mL' : 'g');
+  }, [selected.id, selected.state]);
 
   useEffect(() => setCacheStatus('idle'), [selected.id]);
 

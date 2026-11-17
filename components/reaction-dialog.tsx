@@ -48,6 +48,7 @@ function solventVolumeLiters(materials: AddedSubstance[]) {
   const volumes = water.map((material) => {
     const amount = Number(material.amount);
     if (!Number.isFinite(amount) || amount <= 0) return null;
+    if (material.unit === 'L') return amount;
     if (material.unit === 'mL') return amount / 1000;
     if (material.unit === 'g' && material.density) return amount / material.density / 1000;
     if (material.unit === 'mg' && material.density) return amount / 1000 / material.density / 1000;
@@ -80,7 +81,7 @@ export function analyzeReaction(materials: AddedSubstance[], conditions: LabCond
     grouped.set(id, [...(grouped.get(id) ?? []), material]);
   });
   const moles = (id: string) => {
-    const values = (grouped.get(id) ?? []).map(toMoles);
+    const values = (grouped.get(id) ?? []).map((material) => toMoles(material, conditions));
     return values.some((value) => value === null) ? null : values.reduce<number>((sum, value) => sum + (value ?? 0), 0);
   };
 

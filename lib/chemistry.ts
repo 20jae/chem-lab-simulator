@@ -93,12 +93,20 @@ export const initialMaterials: AddedSubstance[] = [
   { ...substances[0], amount: '5', unit: 'g', rowId: 2 },
 ];
 
-export function toMoles(material: AddedSubstance) {
+export function toMoles(material: AddedSubstance, conditions?: Pick<LabConditions, 'temperature' | 'pressure'>) {
   const amount = Number(material.amount);
   if (!Number.isFinite(amount) || amount <= 0) return null;
   if (material.unit === 'mol') return amount;
   if (material.unit === 'g' && material.molarMass > 0) return amount / material.molarMass;
   if (material.unit === 'mg' && material.molarMass > 0) return amount / 1000 / material.molarMass;
+  if ((material.unit === 'L' || material.unit === 'mL') && material.state === '기체') {
+    const volumeLiters = material.unit === 'L' ? amount : amount / 1000;
+    const temperatureKelvin = (conditions?.temperature ?? 25) + 273.15;
+    const pressureAtm = conditions?.pressure ?? 1;
+    if (temperatureKelvin <= 0 || pressureAtm <= 0) return null;
+    return pressureAtm * volumeLiters / (0.082057 * temperatureKelvin);
+  }
   if (material.unit === 'mL' && material.density) return amount * material.density / material.molarMass;
+  if (material.unit === 'L' && material.density) return amount * 1000 * material.density / material.molarMass;
   return null;
 }
