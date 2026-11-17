@@ -57,7 +57,11 @@ export function ExperimentHistoryDialog({ materials, conditions, result, apparat
     setMessage('');
     try {
       const client = await ensureAnonymousSession();
+      const { data: userData, error: userError } = await client.auth.getUser();
+      if (userError) throw userError;
+      if (!userData.user) throw new Error('저장할 익명 사용자 정보를 확인하지 못했습니다.');
       const { error } = await client.from('experiments').insert({
+        user_id: userData.user.id,
         title: result.title.slice(0, 100),
         temperature_c: conditions.temperature,
         pressure_atm: conditions.pressure,
