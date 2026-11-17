@@ -25,6 +25,12 @@ type ExperimentRecord = {
   created_at: string;
 };
 
+function getErrorMessage(error: unknown, fallback: string) {
+  if (error instanceof Error) return error.message;
+  if (error && typeof error === 'object' && 'message' in error && typeof error.message === 'string') return error.message;
+  return fallback;
+}
+
 export function ExperimentHistoryDialog({ materials, conditions, result, apparatus }: { materials: AddedSubstance[]; conditions: LabConditions; result: ReactionResult | null; apparatus: string }) {
   const [records, setRecords] = useState<ExperimentRecord[]>([]);
   const [loading, setLoading] = useState(false);
@@ -40,7 +46,7 @@ export function ExperimentHistoryDialog({ materials, conditions, result, apparat
       if (error) throw error;
       setRecords((data ?? []) as ExperimentRecord[]);
     } catch (error) {
-      setMessage(error instanceof Error ? error.message : '실험 기록을 불러오지 못했습니다.');
+      setMessage(getErrorMessage(error, '실험 기록을 불러오지 못했습니다.'));
     } finally {
       setLoading(false);
     }
@@ -74,7 +80,7 @@ export function ExperimentHistoryDialog({ materials, conditions, result, apparat
       setMessage('현재 실험 결과를 Supabase에 저장했습니다.');
       await loadRecords(false);
     } catch (error) {
-      setMessage(error instanceof Error ? error.message : '실험 기록 저장에 실패했습니다.');
+      setMessage(getErrorMessage(error, '실험 기록 저장에 실패했습니다.'));
     } finally {
       setSaving(false);
     }
