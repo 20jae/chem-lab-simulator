@@ -1,9 +1,10 @@
 'use client';
 
 import { useState } from 'react';
-import { CalendarClock, Database, FlaskConical, LoaderCircle, Save } from 'lucide-react';
+import { CalendarClock, Database, FlaskConical, LoaderCircle, Save, Trash2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
+import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from '@/components/ui/alert-dialog';
 import type { ReactionResult } from '@/components/reaction-dialog';
 import type { AddedSubstance, LabConditions } from '@/lib/chemistry';
 import { ensureAnonymousSession } from '@/lib/supabase-browser';
@@ -24,6 +25,8 @@ type ExperimentRecord = {
   created_at: string;
 };
 
+type DeleteTarget = { kind: 'one'; id: string; title: string } | { kind: 'all' };
+
 function getErrorMessage(error: unknown, fallback: string) {
   if (error instanceof Error) return error.message;
   if (error && typeof error === 'object' && 'message' in error && typeof error.message === 'string') return error.message;
@@ -34,6 +37,8 @@ export function ExperimentHistoryDialog({ materials, conditions, result, apparat
   const [records, setRecords] = useState<ExperimentRecord[]>([]);
   const [loading, setLoading] = useState(false);
   const [saving, setSaving] = useState(false);
+  const [deleting, setDeleting] = useState(false);
+  const [deleteTarget, setDeleteTarget] = useState<DeleteTarget | null>(null);
   const [message, setMessage] = useState('');
 
   const loadRecords = async (clearMessage = true) => {
@@ -81,6 +86,31 @@ export function ExperimentHistoryDialog({ materials, conditions, result, apparat
     }
   };
 
+  const deleteRecords = async () => {
+    if (!deleteTarget) return;
+    setDeleting(true);
+    setMessage('');
+    try {
+      const client = await ensureAnonymousSession();
+      const { data: userData, error: userError } = await client.auth.getUser();
+      if (userError) throw userError;
+      if (!userData.user) throw new Error('삭제할 익명 사용자 정보를 확인하지 못했습니다.');
+
+      let query = client.from('experiments').delete().eq('user_id', userData.user.id);
+      if (deleteTarget.kind === 'one') query = query.eq('id', deleteTarget.id);
+      const { error } = await query;
+      if (error) throw error;
+
+      setMessage(deleteTarget.kind === 'one' ? '선택한 실험 기록을 삭제했습니다.' : '모든 실험 기록을 삭제했습니다.');
+      setDeleteTarget(null);
+      await loadRecords(false);
+    } catch (error) {
+      setMessage(getErrorMessage(error, '실험 기록 삭제에 실패했습니다.'));
+    } finally {
+      setDeleting(false);
+    }
+  };
+
   return <Dialog onOpenChange={(open) => open && void loadRecords(true)}>
     <DialogTrigger render={<Button variant="outline" className="h-11 rounded-xl px-4" />}><CalendarClock data-icon="inline-start" /> 실험 기록</DialogTrigger>
     <DialogContent className="flex max-h-[92vh] w-[min(900px,calc(100%-24px))] max-w-none flex-col gap-0 overflow-hidden rounded-2xl bg-background p-0 sm:max-w-none">
@@ -90,14 +120,20 @@ export function ExperimentHistoryDialog({ materials, conditions, result, apparat
           <div><p className="flex items-center gap-2 font-bold"><Save className="size-4 text-primary" />현재 실험 저장</p><p className="mt-1 text-sm text-muted-foreground">{result ? `${result.title} · ${materials.length}개 물질` : '먼저 반응 판정 및 계산을 실행해 주세요.'}</p></div>
           <Button onClick={saveCurrentExperiment} disabled={!result || saving} className="mt-3 w-full rounded-xl sm:mt-0 sm:w-auto">{saving ? <LoaderCircle data-icon="inline-start" className="animate-spin" /> : <Database data-icon="inline-start" />}{saving ? '저장 중' : 'Supabase에 저장'}</Button>
         </section>
-        {message && <p className={`mt-3 rounded-xl px-4 py-3 text-sm font-semibold ${message.includes('저장했습니다') ? 'bg-emerald-50 text-emerald-700' : 'bg-amber-50 text-amber-800'}`}>{message}</p>}
-        <div className="mt-5 flex items-center justify-between"><h2 className="text-lg font-bold">최근 기록</h2><span className="rounded-full bg-muted px-3 py-1 text-xs font-semibold">{records.length}개</span></div>
+        {message && <p className={`mt-3 rounded-xl px-4 py-3 text-sm font-semibold ${message.includes('했습니다') ? 'bg-emerald-50 text-emerald-700' : 'bg-amber-50 text-amber-800'}`}>{message}</p>}
+        <div className="mt-5 flex flex-wrap items-center justify-between gap-2"><div className="flex items-center gap-2"><h2 className="text-lg font-bold">최근 기록</h2><span className="rounded-full bg-muted px-3 py-1 text-xs font-semibold">{records.length}개</span></div>{records.length > 0 && <Button variant="outline" size="sm" className="border-destructive/30 text-destructive hover:bg-destructive/5" onClick={() => setDeleteTarget({ kind: 'all' })}><Trash2 data-icon="inline-start" />전체 삭제</Button>}</div>
         {loading ? <div className="grid min-h-48 place-items-center"><LoaderCircle className="size-7 animate-spin text-primary" /></div> : records.length ? <div className="mt-3 space-y-3">{records.map((record) => {
           const snapshot = record.result_snapshot ?? {};
-          return <article key={record.id} className="rounded-2xl border bg-white p-4"><div className="flex items-start gap-3"><span className="grid size-10 shrink-0 place-items-center rounded-xl bg-primary/10 text-primary"><FlaskConical className="size-5" /></span><div className="min-w-0 flex-1"><div className="flex flex-wrap items-center justify-between gap-2"><h3 className="font-bold">{record.title}</h3><time className="text-xs text-muted-foreground">{new Date(record.created_at).toLocaleString('ko-KR')}</time></div>{record.result_equation && <p className="mt-2 overflow-x-auto rounded-lg bg-muted/55 px-3 py-2 font-mono text-sm font-semibold">{record.result_equation}</p>}<p className="mt-2 text-sm leading-6 text-muted-foreground">{record.observation}</p><div className="mt-3 flex flex-wrap gap-2 text-xs font-semibold"><span className="rounded-full bg-secondary px-2.5 py-1">{snapshot.materials?.map((item) => item.formula).join(' + ') || '물질 정보 없음'}</span>{snapshot.conditions && <span className="rounded-full bg-muted px-2.5 py-1">{snapshot.conditions.temperature} °C · {snapshot.conditions.pressure} atm · pH {snapshot.conditions.ph}</span>}</div>{snapshot.result?.calculation && <p className="mt-3 whitespace-pre-line rounded-lg border px-3 py-2 text-xs leading-5 text-[#275b56]">{snapshot.result.calculation}</p>}</div></div></article>;
+          return <article key={record.id} className="rounded-2xl border bg-white p-4"><div className="flex items-start gap-3"><span className="grid size-10 shrink-0 place-items-center rounded-xl bg-primary/10 text-primary"><FlaskConical className="size-5" /></span><div className="min-w-0 flex-1"><div className="flex flex-wrap items-start justify-between gap-2"><div><h3 className="font-bold">{record.title}</h3><time className="text-xs text-muted-foreground">{new Date(record.created_at).toLocaleString('ko-KR')}</time></div><Button variant="ghost" size="icon-sm" aria-label={`${record.title} 기록 삭제`} className="text-muted-foreground hover:bg-destructive/5 hover:text-destructive" onClick={() => setDeleteTarget({ kind: 'one', id: record.id, title: record.title })}><Trash2 /></Button></div>{record.result_equation && <p className="mt-2 overflow-x-auto rounded-lg bg-muted/55 px-3 py-2 font-mono text-sm font-semibold">{record.result_equation}</p>}<p className="mt-2 text-sm leading-6 text-muted-foreground">{record.observation}</p><div className="mt-3 flex flex-wrap gap-2 text-xs font-semibold"><span className="rounded-full bg-secondary px-2.5 py-1">{snapshot.materials?.map((item) => item.formula).join(' + ') || '물질 정보 없음'}</span>{snapshot.conditions && <span className="rounded-full bg-muted px-2.5 py-1">{snapshot.conditions.temperature} °C · {snapshot.conditions.pressure} atm · pH {snapshot.conditions.ph}</span>}</div>{snapshot.result?.calculation && <p className="mt-3 whitespace-pre-line rounded-lg border px-3 py-2 text-xs leading-5 text-[#275b56]">{snapshot.result.calculation}</p>}</div></div></article>;
         })}</div> : <div className="mt-3 rounded-2xl border border-dashed py-12 text-center"><CalendarClock className="mx-auto size-8 text-muted-foreground" /><p className="mt-3 font-semibold">저장된 실험 기록이 없습니다.</p><p className="mt-1 text-sm text-muted-foreground">반응을 실행한 뒤 현재 실험을 저장해 보세요.</p></div>}
       </div>
     </DialogContent>
+    <AlertDialog open={deleteTarget !== null} onOpenChange={(open) => !open && !deleting && setDeleteTarget(null)}>
+      <AlertDialogContent>
+        <AlertDialogHeader><AlertDialogTitle>{deleteTarget?.kind === 'all' ? '모든 기록을 삭제할까요?' : '이 기록을 삭제할까요?'}</AlertDialogTitle><AlertDialogDescription>{deleteTarget?.kind === 'all' ? `저장된 실험 기록 ${records.length}개가 모두 삭제되며 되돌릴 수 없습니다.` : `‘${deleteTarget?.title ?? ''}’ 기록이 영구적으로 삭제됩니다.`}</AlertDialogDescription></AlertDialogHeader>
+        <AlertDialogFooter><AlertDialogCancel disabled={deleting}>취소</AlertDialogCancel><AlertDialogAction variant="destructive" disabled={deleting} onClick={() => void deleteRecords()}>{deleting ? <LoaderCircle data-icon="inline-start" className="animate-spin" /> : <Trash2 data-icon="inline-start" />}{deleting ? '삭제 중' : '삭제'}</AlertDialogAction></AlertDialogFooter>
+      </AlertDialogContent>
+    </AlertDialog>
   </Dialog>;
 }
 
